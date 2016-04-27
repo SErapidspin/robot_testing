@@ -1,0 +1,158 @@
+*** SETTINGS ***
+Documentation		A base set of tests to run on sites to test basic functionality 
+Resource		resource.txt
+Test Setup		Run Keywords 	Open Browser 	${BROWSER}
+...			Maximize Browser Window
+...			Go To	${HOME PAGE}	
+Test Teardown		Close Browser
+
+
+*** VARIABLES ***
+
+
+
+*** TEST CASES ***
+Test Successful Signup
+	Go To Login Page
+	Click Register Button
+	Register Account Credentials
+	User Should Be On Account Dashboard	${FIRST NAME}	${LAST NAME}	${EMAIL ADDRESS}	${PASSWORD}
+
+Test Successful Login
+	Go To Login Page
+	Input Username	${CORRECT USERNAME}
+	Input Password	${CORRECT PASSWORD}
+	Submit Credentials
+	User Should Be On Account Dashboard
+
+
+Test Change Account Address
+	Go To Login Page
+	Login To Account	${CORRECT USERNAME}	${CORRECT PASSWORD}
+	Go To 	${ADDRESS BOOK URL}
+	Change Address		${NEW FIRST NAME}	${NEW LAST NAME}	${NEW TELEPHONE}	${NEW STREET}	${NEW CITY}	${NEW REGION}	${NEW ZIP}
+	Check Account Address Was Changed	${NEW FIRST NAME}	${NEW LAST NAME}	${NEW TELEPHONE}	${NEW STREET}	${NEW CITY}	${NEW REGION}	${NEW ZIP}
+#Teardown for these types of tests should involve changing the address back to the original values
+	Change Address		${FIRST NAME}	${LAST NAME}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
+
+#Should add change password also
+Test Change Account Details
+	Go To Login Page
+	Login To Account	${CORRECT USERNAME}	${CORRECT PASSWORD}
+	User Should Be On Account Dashboard
+	Travel To Account Information Page
+	Change Account Info	${NEW FIRST NAME}	${NEW LAST NAME}
+	Check Account Info Was Changed	${NEW FIRST NAME}	${NEW LAST NAME}	
+	Travel To Account Information Page
+	Change Account Info	${FIRST NAME}	${LAST NAME}
+	Check Account Info Was Changed	${FIRST NAME}	${LAST NAME}
+
+
+Test General Search
+	Search For Term		${GENERAL SEARCH TERM}
+	Click First Product
+	Check That Product Is Related	${GENERAL SEARCH TERM}
+
+Test Specific Search
+	Go To Listing Page
+	${SPECIFIC PRODUCT}= 	Get Name Of First Product
+	Search For Term		${SPECIFIC PRODUCT}
+	Check That Specific Product Was Found	${SPECIFIC PRODUCT}
+
+Test Sort By Name
+	Go To Listing Page
+	Sort Listing Page 	Name
+	Check Page Is Sorted By Name	
+
+Test Sort By Price
+	Go To Listing Page
+	Sort Listing Page	Price
+	Check Page Is Sorted By Price 
+
+Test Filter By Brand
+	Go To Listing Page
+	Filter Page	${BRAND FILTER}
+	Check Page Is Filtered By Brand		${BRAND FILTER}
+
+Test Filter By Price
+	Go To Listing Page
+	Filter Page	${PRICE FILTER}
+	Check Page Is Filtered By Price		${PRICE FILTER}		${MAXIMUM PRICE}	${MINIMUM PRICE}
+
+
+Test Add Simple Product To Cart
+	Go To Product Page	${SIMPLE PRODUCT}
+	Add Simple Product To Cart
+	Check Add To Cart Confirmation
+	${PRODUCT NAME}	=	Get Product Name
+	Go To Cart Page
+	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}	
+	
+Test Add Configurable Product To Cart
+	Go To Product Page	${CONFIGURABLE PRODUCT}
+	Add Configurable Product To Cart	${QUANTITY}	${CONFIGURATION}
+	Check Add To Cart Confirmation
+	${PRODUCT NAME} = 	Get Product Name
+	Go To Cart Page	
+	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
+
+#write keywords
+Test Add From Quickview
+	Go To Listing Page			
+	Open Quickview				
+	Get Quickview Product Name
+	Add To Cart From Quickview		
+	Go To Cart Page				
+	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
+
+Test Remove Simple Product From Cart
+	Go To Product Page	${SIMPLE PRODUCT}
+	Add Simple Product To Cart
+	Go To Cart Page
+	Remove Simple Product Forom Cart	${SIMPLE PRODUCT}
+	Check Product Was Removed From Cart	${SIMPLE PRODUCT}
+
+Test Update Simple Product Quantity
+	Go To Product Page	${SIMPLE PRODUCT}
+	Add Simple Product To Cart
+	Go To Cart Page
+	Change Product Quantity In Cart		${SIMPLE PRODUCT}	${NEW QUANTITY}
+	Check Quantity Was Changed		${SIMPLE PRODUCT}	${NEW QUANTITY}
+
+# To Do
+Test Logged In Checkout 
+	Go To Product Page	${SIMPLE PRODUCT}
+	Add Simple Product to Cart	
+	Go To Checkout Page
+	Log In On Checkout Page
+	Enter Billing Info
+	Enter Shipping Info
+	Enter Shipping Method
+	Enter Payment Info
+	
+#To Do
+Test Checkout As Guest
+	Go To Product Page	${SIMPLE PRODUCT}
+	Add Simple Product To Cart
+	Go To Checkout Page
+	Click Button	xpath=//span[text() = "Continue as Guest"]
+	Enter Billing Information
+	Enter Shipping Information
+	Enter Shipping Method
+	Enter Payment Information
+
+#Write keywords for
+Test Critical Path
+	Go To ${HOME PAGE}
+	Travel To Listing Page
+	Add From Quickview
+	Go To Product Page
+	Add Product To Cart
+	Check Add To Cart Confirmation
+	Click Button	//div[@class="minicart-actions"]/a[@class="cart-link"]
+	Enter Billing Information
+	Enter Shipping Information
+	Enter Shipping Method
+	Enter Payment Information
+	Place Order
+
