@@ -18,6 +18,7 @@ ${CONFIGURABLE PRODUCT}		http://www.snugglebugz.ca/mesa-car-seat.html
 ${WISHLIST PAGE}	
 ${CORRECT USERNAME}	apang+3@demacmedia.com
 ${CORRECT PASSWORD}	testing123	
+${ACCOUNT DASH}		https://www.snugglebugz.ca/customer/account/index	
 ${EMAIL ADDRESS}	apang+robot@demacmedia.com
 ${REGISTER BUTTON}	xpath=//a[@title="Register"]//span[text() = "Register"]
 ${ACCOUNT INFORMATION URL}	https://www.snugglebugz.ca/customer/account/edit	
@@ -79,10 +80,6 @@ Configure Option
 	Click Element	${OPTION}
 
 
-#To Do
-Configure Product
-	
-
 Configure Quantity
 	[Arguments]	${QUANTITY}
 	Input Text	id=qty	${QUANTITY}
@@ -100,6 +97,7 @@ Go To Cart Page
 	Go To		${CART URL}
 
 #To Do
+#Checks that the product is in the cart and that its quantity is correct. Done in this way so you can do one without the other
 Check Product Was Added To Cart
 	[Arguments]	${QUANTITY}	${PRODUCT NAME}
 	Check Product Is In Cart	${PRODUCT NAME}
@@ -128,8 +126,10 @@ Check Add To Cart Confirmation
 #To Do
 # Travel to the cart page using the minicart link at the top (if there is one)
 Travel To Cart Page
+# If you just added to the page, there'll be a minicart open already and that'll mess everything up
+	Wait Until Element Is Not Visible	id=header-cart	10
 	Click Element	id=header-minicart-01
-	Wait For Element To Be Visible	xpath=//a[@class="cart-link"]	
+	Wait Until Element Is Visible	xpath=//a[@class="cart-link"]	
 	Click Element	xpath=//a[@class="cart-link"]
 	Location Should Be	${CART URL}
 
@@ -179,6 +179,7 @@ Go To Login Page
         Location Should Be  ${LOGIN URL}
 
 #To Do
+#Assumes the browser is at the edit address page
 Change Address
 	[Arguments]	${FIRST NAME}	${LAST NAME}	${TELEPHONE}	${STREET}	${CITY}	 ${REGION}	${ZIP}
 	Input Text  	id=firstname	${FIRST NAME}
@@ -206,6 +207,8 @@ Travel To Edit Address
 	Location Should Contain 	www.snugglebugz.ca/customer/address/edit/id
 
 #To Do
+#Checks the address element to see if the parameters are in the address. Assumes that the user 
+# is on the account dashboard
 Check Account Address Was Changed
 	[Arguments]	${FIRST NAME}	${LAST NAME}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Element Should Contain	xpath=//address		${FIRST NAME}
@@ -266,7 +269,7 @@ Get Name Of First Product
 
 #To Do
 #Checks to see if the product was at least found on the listing page
-Check That Specific Product Was Found
+Check That Product Is On Listing Page
 	[Arguments]	${SEARCH PRODUCT}
 	Element Should Be Visible	xpath=//*[@class = "product-name" and contains(text(),"${SEARCH PRODUCT}")]
 	
@@ -291,7 +294,7 @@ Sort Listing Page
 	Click Element	xpath=*[@class="sort-by"]//select/option[contains(text(),"${SORT}")]	
 
 # To Do
-# Basically just click the first product on the listing page
+# Basically just click the first product on the listing page. Assumes browser is on a listing page
 Click First Product
 	Click Element	xpath=//div[@class="category-products"]//*[@class = "product-name"]/a	
 
@@ -305,10 +308,10 @@ Check Page Is Sorted By Price
 
 
 #To Do
-#Sets the filter on the category listing page. Assumes that you're on a listing page
+#Sets the filter on the category listing page by clicking a link in the filter bar that contains both the maximum and minimum price (hopefully hitting the price filter lol). Assumes that you're on a listing page.
 Filter Page
-	[Arguments]	${FILTER}
-	Click Element	xpath=//*[@id="narrow-by-list"]//a[contains(text(),"${FILTER}"]
+	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
+	Click Element	xpath=//*[@id="narrow-by-list"]//a[contains(text(),"${MAXIMUM PRICE}") and contains(text(), "${MINUMUM PRICE}")]
 
 #To Do
 #Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
@@ -321,7 +324,7 @@ Check Page Is Filtered By Brand
 
 #To Do
 Check Page Is Filtered By Price
-	[Arguments]	${PRICE FILTER}		${MAXIMUM PRICE}	${MINIMUM PRICE}	
+	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}	
 	@{PRICE LIST}	Get Webelements		xpath=//*[contains(@id,"product-price-")]
 	:FOR	${PRICE}	IN	@{PRICE LIST}
 	\	${TEXT}=	Get Text	${BRAND}
@@ -330,22 +333,26 @@ Check Page Is Filtered By Price
 	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	Price is higher than maximum price!
 
 #To Do
-Remove Simple Product From Cart
+#Basically clicks the remove item button associated with a product name. Assumes the browser is on the cart page
+
 	[Arguments]	${PRODUCT NAME}
 	Click Button	xpath=//table[@id="shopping-cart-table"]//tr[contains(text(), "${PRODUCT NAME}"]//*[@class = "Remove Item"]
 	
 
 #To Do 
+#Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
 Check Product Was Removed From Cart	${PRODUCT NAME}
 	[Arguments]	${PRODUCT NAME}
 	Element Should Not Contain	xpath=//table=[@id="shopping-cart-table"]	${PRODUCT NAME}
 
 #To Do
+#Changes the number in the quantity field associated with the product name, and then clicks the update quantity button. Assumes that the browser is on the cart page
 Change Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME} 	${QUANITTY}
 	Clear Element Text	xpath=table[@id="shopping-cart-table"//[@class="product-name" and contains(text(), "${PRODUCT NAME}"]/../../input[@title="Qty"]
 	Input Text	xpath=table[@id="shopping-cart-table"//[@class="product-name" and contains(text(), "${PRODUCT NAME}"]/../../input[@title="Qty"]		${QUANTITY}
-	Click Button	xpath=*[@class = "btn-update"]
+	Click Button	xpath=//*[@class = "btn-update"]
+
 
 Click Login Button
         Click Button    id=send2
@@ -368,34 +375,43 @@ Add Simple Product To Cart
 	Press Add Button
 
 Add Configurable Product To Cart
-	[Arguments]	${Quantity}	${Configuration}
-	Configure Product Options	${Configuration}
-	Configure Quantity	${Quantity}
+	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
+	Configure Option 	${CONFIGURATION}	${CONFIGURATION OPTION}
+	Configure Quantity	${QUANTITY}
 	Press Add Button
 
 #To Do
+#Opens the quickview of the first product on the cart. Assumes browser is on listing page
 Open Quickview
-	[Arguments]	${QUANTITY}	
+	[Arguments]	
+	Mouse Over	class=product-image
+	Click Element	class=quickview
+
+#Switches to Quickview frame lol
+Switch To Quickview Frame
+	Select Frame	xpath=//iframe[contains(@src, "quickview")]
+
+#Switches to default frame. Used to get away from quickview frame
+Switch To Default Frame
+	Unselect Frame
 
 #To Do
-Add From Quickview
-
+#Gets the product name in the first open quickview. Assumes that you're on the quickview frame 
+Get Quickview Product Name
+	${PRODUCT NAME}=	Get Text	xpath =//div[@id="quickview-product-shop"]//div[@class ="product-name"]/h1
+	[Return] 	${PRODUCT NAME}
 
 #To Do
+#Adds a simple product to the cart from the first open quickview. (must switch to the iframe if there is one). Assumes that browser is on the listing page and that the first quickview is open
 Add Simple Product To Cart From Quickview
 	[Arguments]	${QUANTITY}	
-
-	
-#To Do
-Get Quickview Product Name
-	
-	[Return]	${PRODUCT NAME}
-
+	Configure Quantity	${QUANTITY}
+	Press Add Button
 
 #To Do
 Add Configurable Product To Cart From Quickview
 	[Arguments]	
-
+	
 
 #To Do
 Go To Checkout Page
@@ -437,7 +453,7 @@ Enter Shipping Information
 	Click Element	xpath=//$[@id="shipping-buttons-container"]//span[text() = "Continue"]
 
 #To Do
-#Click a shipping method. Currently hard-coded to clicking the second shipping method, but can change if need be
+#Click a shipping method. Currently hard-coded to clicking the second shipping method, but will change if need be
 Enter Shipping Method 
 	Click Element	xpath=(//input[@name="shipping method"])[2]	
 
