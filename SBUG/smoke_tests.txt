@@ -1,9 +1,8 @@
 *** SETTINGS ***
 Documentation		A base set of tests to run on sites to test basic functionality 
 Resource		resource.txt
-Test Setup		Run Keywords 	Open Browser 	${BROWSER}
-...			Maximize Browser Window
-...			Go To	${HOME PAGE}	
+Test Setup		Run Keywords 	Open Browser 	${HOME PAGE}	${BROWSER}
+...			AND	Maximize Browser Window
 Test Teardown		Close Browser
 
 
@@ -14,7 +13,7 @@ Test Teardown		Close Browser
 *** TEST CASES ***
 Test Successful Signup
 	Go To Login Page
-	Click Register Button
+	Click Register Button		${REGISTER BUTTON}
 	Register Account Credentials
 	User Should Be On Account Dashboard	${FIRST NAME}	${LAST NAME}	${EMAIL ADDRESS}	${PASSWORD}
 

@@ -11,7 +11,7 @@ ${VALID USERNAME}		apang@demacmedia.com
 ${VALID PASSWORD}		testing123
 
 #Below variables are to be done 
-${HOME PAGE}	www.snugglebugz.ca
+${HOME PAGE}	http://www.snugglebugz.ca
 ${LOGIN URL}	https://www.snugglebugz.ca/customer/account/login
 ${SIMPLE PRODUCT}	http://www.snugglebugz.ca/dock-a-tot-deluxe-silver-lining.html
 ${CONFIGURABLE PRODUCT}		http://www.snugglebugz.ca/mesa-car-seat.html
@@ -19,9 +19,10 @@ ${WISHLIST PAGE}
 ${CORRECT USERNAME}	apang+3@demacmedia.com
 ${CORRECT PASSWORD}	testing123	
 ${EMAIL ADDRESS}	apang+robot@demacmedia.com
+${REGISTER BUTTON}	xpath=//a[@title="Register"]//span[text() = "Register"]
 ${ACCOUNT INFORMATION URL}	https://www.snugglebugz.ca/customer/account/edit	
 ${ADDRESS BOOK URL}	https://www.snugglebugz.ca/customer/address/
-${CART URL}		www.snugglebugz.ca/checkout/cart
+${CART URL}		http://www.snugglebugz.ca/checkout/cart
 ${LISTING PAGE}		http://www.snugglebugz.ca/just-arrived.html
 ${SEARCH BAR}		id=search
 ${GENERAL SEARCH TERM}		stroller
@@ -49,7 +50,7 @@ ${CREDIT CARD YEAR}	2018
 
 
 #Perhaps the below should be specified in the command line?
-${BROWSER}
+${BROWSER}		chrome
 
 *** Keywords ***
 Open Browser To Product Page 
@@ -149,7 +150,7 @@ Login To Account
 	[Arguments]	${USERNAME}	${PASSWORD}
 	Input Username  	${USERNAME}
 	Input Password  	${PASSWORD}
-	Submit Credentials
+	Click Button	xpath=//button[@type="submit"]//span[text() = "Login"]
 
 Open Browser To Login Page
         Open Browser  ${LOGIN URL}   ${BROWSER}
@@ -260,7 +261,7 @@ Check That Product Is Related
 #Gets the name of the first product on the listing page
 Get Name Of First Product
 	${SPECIFIC NAME} =	Get Text	xpath=//*[@class = "category-products"]//li[@class = "item"]//*[@class = "product-name"]
-	[Returns]	${SPECIFIC NAME}
+	[Return]	${SPECIFIC NAME}
 
 
 #To Do
@@ -374,7 +375,7 @@ Add Configurable Product To Cart
 
 #To Do
 Open Quickview
-	[Arguments]	Quickview
+	[Arguments]	${QUANTITY}	
 
 #To Do
 Add From Quickview
@@ -382,7 +383,7 @@ Add From Quickview
 
 #To Do
 Add Simple Product To Cart From Quickview
-	[Arguments]	Quantity
+	[Arguments]	${QUANTITY}	
 
 	
 #To Do
