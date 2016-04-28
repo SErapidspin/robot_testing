@@ -199,8 +199,12 @@ Go To Edit Address Page
 	
 #To Do
 #Under the assumption that the user is on the account dashboard
-Travel To Edit Address Page
-	
+Travel To Edit Address 
+	Click Element	xpath=//div[contains(@class,
+"block-account")//a[text() = "Address Book"]
+	Click Element	xpath=//a[text() = "Change Billing Address"]
+	Location Should Contain
+www.snugglebugz.ca/customer/address/edit/id
 
 #To Do
 Check Account Address Was Changed

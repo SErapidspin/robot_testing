@@ -29,7 +29,7 @@ Test Successful Login
 Test Change Account Address
 	Go To Login Page
 	Login To Account	${CORRECT USERNAME}	${CORRECT PASSWORD}
-	Go To 	${ADDRESS BOOK URL}
+	Travel To Edit Address
 	Change Address		${NEW FIRST NAME}	${NEW LAST NAME}	${NEW TELEPHONE}	${NEW STREET}	${NEW CITY}	${NEW REGION}	${NEW ZIP}
 	Check Account Address Was Changed	${NEW FIRST NAME}	${NEW LAST NAME}	${NEW TELEPHONE}	${NEW STREET}	${NEW CITY}	${NEW REGION}	${NEW ZIP}
 #Teardown for these types of tests should involve changing the address back to the original values
