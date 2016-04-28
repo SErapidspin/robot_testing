@@ -12,6 +12,8 @@ ${VALID PASSWORD}		testing123
 
 #Below variables are to be done 
 ${HOME PAGE}	http://www.snugglebugz.ca
+${CLOSE NEWSLETTER BUTTON}	xpath=//div[@id ='newsletter-dropdown']//div[@class='close']
+${NEWSLETTER OVERLAY}	xpath=//div[@id='newsletter-dropdown']
 ${LOGIN URL}	https://www.snugglebugz.ca/customer/account/login
 ${SIMPLE PRODUCT}	http://www.snugglebugz.ca/dock-a-tot-deluxe-silver-lining.html
 ${CONFIGURABLE PRODUCT}		http://www.snugglebugz.ca/mesa-car-seat.html
@@ -20,15 +22,14 @@ ${CORRECT USERNAME}	apang+3@demacmedia.com
 ${CORRECT PASSWORD}	testing123	
 ${ACCOUNT DASH}		https://www.snugglebugz.ca/customer/account/index	
 ${EMAIL ADDRESS}	apang+robot@demacmedia.com
-${REGISTER BUTTON}	xpath=//a[@title="Register"]//span[text() = "Register"]
+${REGISTER BUTTON}	xpath=//a[@title="Register"]
 ${ACCOUNT INFORMATION URL}	https://www.snugglebugz.ca/customer/account/edit	
 ${ADDRESS BOOK URL}	https://www.snugglebugz.ca/customer/address/
 ${CART URL}		http://www.snugglebugz.ca/checkout/cart
 ${LISTING PAGE}		http://www.snugglebugz.ca/just-arrived.html
 ${SEARCH BAR}		id=search
 ${GENERAL SEARCH TERM}		stroller
-${SEARCH PRODUCT}	
-${NEW QUANTITY}		
+${NEW QUANTITY}		3
 ${FIRST NAME}		Andrew
 ${NEW FIRST NAME}	Chris
 ${LAST NAME}		Pang
@@ -41,9 +42,11 @@ ${NEW ZIP}		1a2a3a
 ${CHECKOUT URL}		https://www.snugglebugz.ca/checkout/onepage/
 ${CHECKOUT BUTTON}	class=btn-checkout
 ${PAYMENT GATEWAY}		monerisvault
-${BRAND FILTER}		
-${PRICE FILTER}		
-${CONFIGURATION}	
+${BRAND FILTER}		AppleCheeks	
+${MAXIMUM PRICE}	0.00
+${MINIMUM PRICE}	999.99
+${CONFIGURATION}	xpath=//select[contains(@id, "attribute")]
+${CONFIGURATION OPTION}		xpath=//option[@contains(text(), "Black")]	
 ${QUANTITY}		1
 ${VALID CREDIT CARD}	5113400993928386
 ${CREDIT CARD MONTH}	09
@@ -135,9 +138,9 @@ Travel To Cart Page
 
 # Close that damned newsletter popup
 Close Newsletter Popup
-        [Arguments]     ${CLOSE BUTTON}  ${NEWSLETTER OVERLAY}
-        Wait Until Element Is Visible  ${CLOSE BUTTON}  7
-        Click Element  ${CLOSE BUTTON}
+        [Arguments]     ${CLOSE NEWSLETTER BUTTON}  ${NEWSLETTER OVERLAY}
+        Wait Until Element Is Visible  ${CLOSE NEWSLETTER BUTTON}  7
+        Click Element  ${CLOSE NEWSLETTER BUTTON}
         Wait Until Element Is Not Visible  ${NEWSLETTER OVERLAY}   7
 
 Input Username          [Arguments]  ${username}
@@ -325,7 +328,7 @@ Check Page Is Filtered By Brand
 #To Do
 Check Page Is Filtered By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}	
-	@{PRICE LIST}	Get Webelements		xpath=//*[contains(@id,"product-price-")]
+	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,"product-price-")]
 	:FOR	${PRICE}	IN	@{PRICE LIST}
 	\	${TEXT}=	Get Text	${BRAND}
 	\	${FLOAT}=	Convert To Number	${TEXT.strip('$')}
