@@ -123,7 +123,7 @@ Check Product Is In Cart
 #Checks if there's a quantity field associated with that product name in the cart. Assumes user is on the cart page
 Check Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME}		${INTENDED QUANTITY} 
-	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}')]/../../input[@title='Qty']
+	${ACTUAL QUANTITY}=	Get Value	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title = 'Qty']
 	Should Be Equal		${ACTUAL QUANTITY}	${INTENDED QUANTITY}
 
 # To Do
@@ -370,16 +370,16 @@ Remove Product From Cart
 
 #To Do 
 #Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
-Check Product Was Removed From Cart	${PRODUCT NAME}
+Check Product Was Removed From Cart
 	[Arguments]	${PRODUCT NAME}
 	Element Should Not Contain	xpath=//table[@id='shopping-cart-table']	${PRODUCT NAME}
 
 #To Do
 #Changes the number in the quantity field associated with the product name, and then clicks the update quantity button. Assumes that the browser is on the cart page
 Change Product Quantity In Cart
-	[Arguments]	${PRODUCT NAME} 	${QUANITTY}
+	[Arguments]	${PRODUCT NAME} 	${CHANGE QUANTITY}
 	Clear Element Text	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title='Qty']
-	Input Text	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title='Qty']		${QUANTITY}
+	Input Text	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title='Qty']		${CHANGE QUANTITY}
 	Click Button	xpath=//*[@class = 'btn-update']
 
 
@@ -390,7 +390,7 @@ User Should Be On Account Dashboard
         Location Should Be  ${ACCOUNT DASH}
 
 Login Should Have Failed
-        Location Should Be  ${LOGIN URL}  OR	https://www.snugglebugz.ca/customer/account/
+        Location Should Contain		https://www.snugglebugz.ca/customer/account
 
 
 #To Do
@@ -399,8 +399,8 @@ Get Product Name
 	[Return]	${PRODUCT NAME}
 
 Add Simple Product To Cart
-	[Arguments]	${Quantity}
-	Configure Quantity	${Quantity}
+	[Arguments]	${QUANTITY}
+	Configure Quantity	${QUANTITY}
 	Press Add Button
 
 Add Configurable Product To Cart
@@ -434,8 +434,12 @@ Get Quickview Product Name
 #Adds a simple product to the cart from the first open quickview. (must switch to the iframe if there is one). Assumes that browser is on the listing page and that the first quickview is open
 Add Simple Product To Cart From Quickview
 	[Arguments]	${QUANTITY}	
-	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Open Quickview
+        Switch To Quickview Frame
+        Add Simple Product To Cart     ${QUANTITY}
+        Unselect Frame
+
+	
 
 #To Do
 Add Configurable Product To Cart From Quickview
@@ -452,11 +456,12 @@ Log In On Checkout Page
 	[Arguments]	${USERNAME}	${PASSWORD}
 	Input Text	id=login-email	${USERNAME}
 	Input Text	id=login-password	${PASSWORD}
-	Click Element	xpath=//form[@id='login-form']//button[@type='submit']	
+	Click Element	xpath=//div[@id='checkout-step-login']//button//span[text()="Log In"]
 
 #To Do
 Enter Billing Information
 	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
+	Wait Until Element Is Visible	id=checkout-step-billing
 	Input Text	id=billing:firstname	${FIRST NAME}
 	Input Text	id=billing:lastname	${LAST NAME}
 	Input Text	id=billing:email	${EMAIL}
@@ -471,6 +476,7 @@ Enter Billing Information
 #To Do
 Enter Shipping Information
 	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
+	Wait Until Element Is Visible	id=checkout-step-shipping
 	Input Text	id=shipping:firstname	${FIRST NAME}
 	Input Text	id=shipping:lastname	${LAST NAME}
 	Input Text	id=shipping:email	${EMAIL}
@@ -484,6 +490,7 @@ Enter Shipping Information
 #To Do
 #Click a shipping method. Currently hard-coded to clicking the second shipping method, but will change if need be
 Enter Shipping Method 
+	Wait Until Element Is Visible	id=checkout-step-shipping_method
 	Click Element	xpath=(//input[@name='shipping method'])[2]	
 
 
@@ -491,6 +498,7 @@ Enter Shipping Method
 #Currently clicks the credit cart option. Maybe should split it into 'Enter Credit Card' and 'Enter Paypal'
 Enter Payment Information
 	[Arguments]	${CREDIT CARD NUMBER}	${CREDIT CARD TYPE}	${CREDIT CARD MONTH}	${CREDIT CARD YEAR}	${CREDIT CARD VERIFICATION}
+	Wait Until Element Is Visible	id=checkout-step-payment
 	Click Element	 id=p_method_${PAYMENT GATEWAY}
 	Click Element	id=${PAYMENT GATEWAY}_cc_type
 	Click Element	xpath=//select[@id='${PAYMENT GATEWAY}_cc_type']//option[@value='${CREDIT CARD TYPE}']
@@ -506,3 +514,6 @@ Enter Payment Information
 #It all comes together. Assumes browser is at the Order Review step of the checkout. 
 Place Order
 	Click Button	xpath=//button[contains(@class, 'btn-checkout']
+
+
+#To do: Add Logging, Add to wishlist, various negative testing scenarios

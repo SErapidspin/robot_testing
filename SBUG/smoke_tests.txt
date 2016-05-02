@@ -84,13 +84,13 @@ Test Filter By Price
 	Check Page Is Filtered By Price		${MAXIMUM PRICE}	${MINIMUM PRICE}
 
 
-Test Add Simple Product To Cart     ${QUANTITY}
+Test Add Simple Product To Cart
 	Go To Product Page	${SIMPLE PRODUCT}
-	Add Simple Product To Cart     ${QUANTITY}
+	Add Simple Product To Cart	${QUANTITY}
 	Check Add To Cart Confirmation
-	${PRODUCT NAME}=	Get Product Name
-	Go To Cart Page		${CART URL}
-	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}	
+	${PRODUCT NAME} =	Get Product Name
+	Travel To Cart Page
+	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
 	
 Test Add Configurable Product To Cart
 	Go To Product Page	${CONFIGURABLE PRODUCT}
@@ -105,7 +105,7 @@ Test Add From Quickview
 	Go To Listing Page     ${LISTING PAGE}			
 	Open Quickview				
 	Switch To Quickview Frame
-	Get Quickview Product Name
+	${PRODUCT NAME} =	Get Quickview Product Name
 	Add Simple Product To Cart     ${QUANTITY} 
 	Unselect Frame
 	Travel To Cart Page
@@ -113,16 +113,16 @@ Test Add From Quickview
 
 Test Remove Simple Product From Cart
 	Go To Product Page	${SIMPLE PRODUCT}
-	${PRODUCT NAME}=	Get Product Name
-	Add Simple Product To Cart     ${QUANTITY}
-	Go To Cart Page		${CART URL}
+	${PRODUCT NAME} =	Get Product Name
+	Add Simple Product To Cart	${QUANTITY}
+	Travel To Cart Page
 	Remove Product From Cart	${PRODUCT NAME}
 	Check Product Was Removed From Cart	${PRODUCT NAME}
 
 Test Update Simple Product Quantity
 	Go To Product Page	${SIMPLE PRODUCT}
 	${PRODUCT NAME}=	Get Product Name
-	Add Simple Product To Cart     ${QUANTITY}
+	Add Simple Product To Cart	${QUANTITY}
 	Go To Cart Page		${CART URL}
 	Change Product Quantity In Cart		${PRODUCT NAME}		${NEW QUANTITY}
 	Check Product Quantity In Cart	${PRODUCT NAME}		${NEW QUANTITY}
@@ -130,7 +130,8 @@ Test Update Simple Product Quantity
 # To Do
 Test Logged In Checkout 
 	Go To Product Page	${SIMPLE PRODUCT}
-	Add Simple Product To Cart     ${QUANTITY}	
+	Add Simple Product To Cart	${QUANTITY}	
+	Check Add To Cart Confirmation
 	Go To Checkout Page
 	Log In On Checkout Page		${CORRECT USERNAME}	${CORRECT PASSWORD}
 	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
@@ -141,7 +142,8 @@ Test Logged In Checkout
 #To Do
 Test Checkout As Guest
 	Go To Product Page	${SIMPLE PRODUCT}
-	Add Simple Product To Cart     ${QUANTITY}
+	Add Simple Product To Cart	${QUANTITY}
+	Check Add To Cart Confirmation
 	Go To Checkout Page
 	Click Element	xpath=//span[text() = "Continue as Guest"]
 	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
@@ -152,10 +154,10 @@ Test Checkout As Guest
 #Write keywords for
 Test Critical Path
 	Travel To Listing Page
-	Add From Quickview
+	Add Simple Product To Cart From Quickview
 	Go To Product Page
 	Add Product To Cart
-	Check Add To Cart Confirmation
+	Check Add To Cart Confirmation	${QUANTITY}
 	Travel To Cart Page
 	Travel To Checkout Page
 	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
