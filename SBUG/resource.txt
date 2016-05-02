@@ -325,8 +325,7 @@ Filter Page By Brand
 #Sets the filter on the category listing page by clicking a link in the filter bar that contains both the maximum and minimum price (hopefully hitting the price filter lol). Assumes that you're on a listing page.
 Filter Page By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
-	Click Element	xpath=//*[@id='narrow-by-list']//a[contains(text(),'${MAXIMUM PRICE}') and
-contains(text(), '${MINIMUM PRICE}')]
+	Click Element	xpath=//*[@id='narrow-by-list']//a[contains(text(),'${MAXIMUM PRICE}') and contains(text(), '${MINIMUM PRICE}')]
 
 #To Do
 #Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
@@ -381,7 +380,8 @@ Login Should Have Failed
 
 #To Do
 Get Product Name
-	${PRODUCT NAME}=	Get Text	xpath=//*[@class = 'product-name']	
+	${PRODUCT NAME}=	Get Text	xpath=//*[@class =
+'product-name']/h1	
 	[Return]	${PRODUCT NAME}
 
 Add Simple Product To Cart
