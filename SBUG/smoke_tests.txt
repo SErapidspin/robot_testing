@@ -123,7 +123,7 @@ Test Update Simple Product Quantity
 	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Cart Page		${CART URL}
-	Change Product Quantity In Cart		${PRODUCT NAME}	${NEW QUANTITY}
+	Change Product Quantity In Cart		${PRODUCT NAME}		${NEW QUANTITY}
 	Check Product Quantity In Cart	${PRODUCT NAME}		${NEW QUANTITY}
 
 # To Do

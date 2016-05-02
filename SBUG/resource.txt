@@ -6,7 +6,7 @@ Library		Selenium2Library
 
 
 *** Variables ***
-${DELAY}			0	
+{DELAY}				0.5
 ${VALID USERNAME}		apang@demacmedia.com
 ${VALID PASSWORD}		testing123
 
