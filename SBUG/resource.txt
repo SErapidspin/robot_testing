@@ -209,8 +209,7 @@ Go To Edit Address Page
 #To Do
 #Under the assumption that the user is on the account dashboard
 Travel To Edit Address 
-	Click Element
-xpath=//div[contains(@class,'block-account')]//a[text()='Address Book']
+	Click Element	xpath=//div[contains(@class,'block-account')]//a[text()='Address Book']
 	Click Element	xpath=//a[text() = 'Change Billing Address']
 	Location Should Contain 	www.snugglebugz.ca/customer/address/edit/id
 
@@ -266,6 +265,7 @@ Check That Product Is Related
 	${PRODUCT NAME}=	Get Text	xpath=//div[@class='product-name']
 	${PRODUCT DESCRIPTION}=		Get Text	xpath=//*[contains(@class,'description')]
 	${PRODUCT DETAILS}=	Catenate	${PRODUCT NAME}		${PRODUCT DESCRIPTION}
+	Log	'Product found: ${PRODUCT NAME}'
 	Should Contain	${PRODUCT DETAILS}	${SEARCH TERM}
 
 #To Do
@@ -319,7 +319,7 @@ Check Page Is Sorted By Price
 #Sets the filter by clicking on a brand in the filter bar
 Filter Page By Brand
 	[Arguments]	${BRAND FILTER}
-	Click Element	xpath=//a[text() = '${BRAND FILTER}')]
+	Click Element	xpath=//a[text() = '${BRAND FILTER}']
 
 #To Do
 #Sets the filter on the category listing page by clicking a link in the filter bar that contains both the maximum and minimum price (hopefully hitting the price filter lol). Assumes that you're on a listing page.
@@ -364,7 +364,7 @@ Check Product Was Removed From Cart	${PRODUCT NAME}
 #Changes the number in the quantity field associated with the product name, and then clicks the update quantity button. Assumes that the browser is on the cart page
 Change Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME} 	${QUANITTY}
-	Clear Element Text	xpath=table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']
+	Clear Element Text	xpath=//table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']
 	Input Text	xpath=table[@id='shopping-cart-table'//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']		${QUANTITY}
 	Click Button	xpath=//*[@class = 'btn-update']
 

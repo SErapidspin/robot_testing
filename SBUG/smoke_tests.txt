@@ -112,9 +112,10 @@ Test Add From Quickview
 
 Test Remove Simple Product From Cart
 	Go To Product Page	${SIMPLE PRODUCT}
+	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Cart Page		${CART URL}
-	Remove Product From Cart	${SIMPLE PRODUCT}
+	Remove Product From Cart	${PRODUCT NAME}
 	Check Product Was Removed From Cart	${SIMPLE PRODUCT}
 
 Test Update Simple Product Quantity
@@ -129,7 +130,8 @@ Test Logged In Checkout
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}	
 	Go To Checkout Page
-	Log In On Checkout Page
+	Log In On Checkout Page		${CORRECT USERNAME}	${CORRECT
+PASSWORD}
 	Enter Billing Information
 	Enter Shipping Information
 	Enter Shipping Method
