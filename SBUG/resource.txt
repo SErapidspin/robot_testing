@@ -380,8 +380,7 @@ Login Should Have Failed
 
 #To Do
 Get Product Name
-	${PRODUCT NAME}=	Get Text	xpath=//*[@class =
-'product-name']/h1	
+	${PRODUCT NAME}=	Get Text	xpath=//*[@class='product-name']/h1	
 	[Return]	${PRODUCT NAME}
 
 Add Simple Product To Cart

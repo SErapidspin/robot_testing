@@ -116,14 +116,15 @@ Test Remove Simple Product From Cart
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Cart Page		${CART URL}
 	Remove Product From Cart	${PRODUCT NAME}
-	Check Product Was Removed From Cart	${SIMPLE PRODUCT}
+	Check Product Was Removed From Cart	${PRODUCT NAME}
 
 Test Update Simple Product Quantity
 	Go To Product Page	${SIMPLE PRODUCT}
+	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Cart Page		${CART URL}
-	Change Product Quantity In Cart		${SIMPLE PRODUCT}	${NEW QUANTITY}
-	Check Product Quantity In Cart	${SIMPLE PRODUCT}	${NEW QUANTITY}
+	Change Product Quantity In Cart		${PRODUCT NAME}	${NEW QUANTITY}
+	Check Product Quantity In Cart	${PRODUCT NAME}		${NEW QUANTITY}
 
 # To Do
 Test Logged In Checkout 
