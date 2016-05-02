@@ -372,7 +372,7 @@ Remove Product From Cart
 #Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
 Check Product Was Removed From Cart
 	[Arguments]	${PRODUCT NAME}
-	Element Should Not Contain	xpath=//table[@id='shopping-cart-table']	${PRODUCT NAME}
+	Element Should Not Contain	xpath=//div[@class='main']	${PRODUCT NAME}
 
 #To Do
 #Changes the number in the quantity field associated with the product name, and then clicks the update quantity button. Assumes that the browser is on the cart page
@@ -458,7 +458,7 @@ Log In On Checkout Page
 	Input Text	id=login-password	${PASSWORD}
 	Click Element	xpath=//div[@id='checkout-step-login']//button//span[text()="Log In"]
 
-#To Do
+#To Do: Add password for guest checkout
 Enter Billing Information
 	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Wait Until Element Is Visible	id=checkout-step-billing
@@ -472,6 +472,26 @@ Enter Billing Information
 	Click Element	id=billing:region_id
 	Click Element	xpath=//select[@id= 'billing:region_id']/option[text()='${REGION}']
 	Click Element	xpath=//*[@id='billing-buttons-container']//span[text() = 'Continue']
+
+
+
+Enter Billing Information As Guest
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}	${PASS}
+	Wait Until Element Is Visible	id=checkout-step-billing
+	Input Text	id=billing:firstname	${FIRST NAME}
+	Input Text	id=billing:lastname	${LAST NAME}
+	Input Text	id=billing:email	${EMAIL}
+	Input Text	id=billing:postcode	${ZIP}
+	Input Text	id=billing:telephone	${TELEPHONE}
+	Input Text	id=billing:street1	${STREET}
+	Input Text	id=billing:city		${CITY}
+	Click Element	id=billing:region_id
+	Click Element	xpath=//select[@id= 'billing:region_id']/option[text()='${REGION}']
+	Input Text	id=billing:customer_password	${PASS}
+	Input Text	id=billing:confirm_password	${PASS}
+	Click Element	xpath=//*[@id='billing-buttons-container']//span[text() = 'Continue']
+
+
 
 #To Do
 Enter Shipping Information

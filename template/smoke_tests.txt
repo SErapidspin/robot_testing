@@ -139,14 +139,14 @@ Test Logged In Checkout
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	
-#To Do
+#To Do: add password for guest checkout
 Test Checkout As Guest
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	${QUANTITY}
 	Check Add To Cart Confirmation
 	Go To Checkout Page
 	Click Element	xpath=//span[text() = "Continue as Guest"]
-	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
+	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}	${CORRECT PASSWORD}
 	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
@@ -154,14 +154,14 @@ Test Checkout As Guest
 #Write keywords for
 Test Critical Path
 	Travel To Listing Page
-	Add Simple Product To Cart From Quickview
+	Add Simple Product To Cart From Quickview	${QUANTITY}	
 	Go To Product Page
 	Add Product To Cart
-	Check Add To Cart Confirmation	${QUANTITY}
+	Check Add To Cart Confirmation	
 	Travel To Cart Page
 	Travel To Checkout Page
-	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
-	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
+	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
+	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	Place Order
