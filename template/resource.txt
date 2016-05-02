@@ -6,7 +6,7 @@ Library		Selenium2Library
 
 
 *** Variables ***
-${DELAY}		0
+${DELAY}			0	
 ${VALID USERNAME}		apang@demacmedia.com
 ${VALID PASSWORD}		testing123
 
@@ -20,9 +20,9 @@ ${CONFIGURABLE PRODUCT}		http://www.snugglebugz.ca/mesa-car-seat.html
 ${WISHLIST PAGE}	
 ${CORRECT USERNAME}	apang+3@demacmedia.com
 ${CORRECT PASSWORD}	testing123	
-${ACCOUNT DASH}		https://www.snugglebugz.ca/customer/account/index	
+${ACCOUNT DASH}		https://www.snugglebugz.ca/customer/account/	
 ${EMAIL ADDRESS}	apang+robot@demacmedia.com
-${REGISTER BUTTON}	xpath=//a[@title="Register"]
+${REGISTER BUTTON}	xpath=(//form[@id='login-form']//a[@title='Register'])[2]
 ${ACCOUNT INFORMATION URL}	https://www.snugglebugz.ca/customer/account/edit	
 ${ADDRESS BOOK URL}	https://www.snugglebugz.ca/customer/address/
 ${CART URL}		http://www.snugglebugz.ca/checkout/cart
@@ -45,8 +45,8 @@ ${PAYMENT GATEWAY}		monerisvault
 ${BRAND FILTER}		AppleCheeks	
 ${MAXIMUM PRICE}	0.00
 ${MINIMUM PRICE}	999.99
-${CONFIGURATION}	xpath=//select[contains(@id, "attribute")]
-${CONFIGURATION OPTION}		xpath=//option[@contains(text(), "Black")]	
+${CONFIGURATION}	xpath=//select[contains(@id, 'attribute')]
+${CONFIGURATION OPTION}		xpath=//option[contains(text(), 'Black')]	
 ${QUANTITY}		1
 ${VALID CREDIT CARD}	5113400993928386
 ${CREDIT CARD MONTH}	09
@@ -54,7 +54,7 @@ ${CREDIT CARD YEAR}	2018
 
 
 #Perhaps the below should be specified in the command line?
-${BROWSER}		chrome
+${BROWSER}		firefox
 
 *** Keywords ***
 Open Browser To Product Page 
@@ -89,7 +89,7 @@ Configure Quantity
 
 
 Press Add Button	
-	Click Button  xpath=//button[contains(@title, "Add to Cart")]
+	Click Button  xpath=//button[contains(@title, 'Add to Cart')]
 
 Press Wishlist Button
 	Click Button	class=link-wishlist
@@ -110,14 +110,14 @@ Check Product Was Added To Cart
 #Checks if there's a product in the cart that contains that product name. Assumes user is on the cart page
 Check Product Is In Cart
 	[Arguments]	${PRODUCT NAME}	
-	Element Should Be Visible	xpath=table[@id= "shopping-cart-table"]//*[@class = "product-name" and contains(text(),"${PRODUCT NAME}"]
+	Element Should Be Visible	xpath=table[@id= 'shopping-cart-table']//*[@class = 'product-name' and contains(text(),'${PRODUCT NAME}']
 	
 
 
 #Checks if there's a quantity field associated with that product name in the cart. Assumes user is on the cart page
 Check Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME}		${INTENDED QUANTITY} 
-	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id="shopping-cart-table"//[@class="product-name" and contains(text(), "${PRODUCT NAME}"]/../../input[@title="Qty"]
+	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id='shopping-cart-table'//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']
 	Should Be Equal		${ACTUAL QUANTITY}	${INTENDED QUANTITY}
 
 # To Do
@@ -132,8 +132,8 @@ Travel To Cart Page
 # If you just added to the page, there'll be a minicart open already and that'll mess everything up
 	Wait Until Element Is Not Visible	id=header-cart	10
 	Click Element	id=header-minicart-01
-	Wait Until Element Is Visible	xpath=//a[@class="cart-link"]	
-	Click Element	xpath=//a[@class="cart-link"]
+	Wait Until Element Is Visible	xpath=//a[@class='cart-link']	
+	Click Element	xpath=//a[@class='cart-link']
 	Location Should Be	${CART URL}
 
 # Close that damned newsletter popup
@@ -142,6 +142,7 @@ Close Newsletter Popup
         Wait Until Element Is Visible  ${CLOSE NEWSLETTER BUTTON}  7
         Click Element  ${CLOSE NEWSLETTER BUTTON}
         Wait Until Element Is Not Visible  ${NEWSLETTER OVERLAY}   7
+	Unselect Frame
 
 Input Username          [Arguments]  ${username}
         Input Text      id=email  ${username}
@@ -153,7 +154,8 @@ Login To Account
 	[Arguments]	${USERNAME}	${PASSWORD}
 	Input Username  	${USERNAME}
 	Input Password  	${PASSWORD}
-	Click Button	xpath=//button[@type="submit"]//span[text() = "Login"]
+	Wait Until Element Is Visible	xpath=//*[@id="send2"]
+	Click Button	xpath=//*[@id="send2"]
 
 Open Browser To Login Page
         Open Browser  ${LOGIN URL}   ${BROWSER}
@@ -164,6 +166,8 @@ Open Browser To Login Page
 #To Do
 Click Register Button
 	[Arguments]	${REGISTER BUTTON}
+	Wait Until Page Contains Element	${REGISTER BUTTON}	10
+	Wait Until Element Is Visible	${REGISTER BUTTON}	10
 	Click Button	${REGISTER BUTTON}
 	Location Should Be 	${REGISTER URL}
 
@@ -175,7 +179,7 @@ Register Account Credentials
 	Input Text	id=email_addres		${EMAIL ADDRESS}
 	Input Text	id=password	${PASSWORD}
 	Input Text	id=confirmation		${PASSWORD}
-	Click Button	xpath=//form[@id= "form-validate"]//button[@type="submit"]
+	Click Button	xpath=//form[@id= 'form-validate']//button[@type='submit']
 
 Go To Login Page
         Go To   ${LOGIN URL}
@@ -190,8 +194,8 @@ Change Address
 	Input Text	id=telephone	${TELEPHONE}
 	Input Text	id=street_1	${STREET}
 	Input Text	id=city		${CITY}
-	Click Element	xpath=//select[@id="region_id"/..']	
-	Click Element	xpath=//select[@id="region_id"]/option[text()="${REGION}"]
+	Click Element	xpath=//select[@id='region_id'/..']	
+	Click Element	xpath=//select[@id='region_id']/option[text()='${REGION}']
 	Input Text	id=zip		${ZIP}
 	Click Button	title=Save Address
 
@@ -205,8 +209,9 @@ Go To Edit Address Page
 #To Do
 #Under the assumption that the user is on the account dashboard
 Travel To Edit Address 
-	Click Element	xpath=//div[contains(@class,"block-account")//a[text() = "Address Book"]
-	Click Element	xpath=//a[text() = "Change Billing Address"]
+	Click Element
+xpath=//div[contains(@class,'block-account')]//a[text()='Address Book']
+	Click Element	xpath=//a[text() = 'Change Billing Address']
 	Location Should Contain 	www.snugglebugz.ca/customer/address/edit/id
 
 #To Do
@@ -230,14 +235,14 @@ Go To Account Information Page
 #To Do
 # Under the assumption that the user is on the Account Dashboard page
 Travel To Account Information Page
-	Click Element	xpath=//div[@class = "block-account"]//strong[text() = "Account Information"]	
+	Click Element	xpath=//div[@class = 'block-account']//strong[text() = 'Account Information']	
 	Location Should Be	${ACCOUNT INFORMATION URL}
 
 Change Account Info
 	[Arguments]	${FIRST NAME}	${LAST NAME}
 	Input Text	id=firstname	${FIRST NAME}
 	Input Text	id=lastname	${LAST NAME}
-	Click Button	xpath=//span[text() = "Save"]	
+	Click Button	xpath=//span[text() = 'Save']	
 
 #To Do
 #Checks the contents of the first and last name fields to see of the values were changed
@@ -250,23 +255,23 @@ Check Account Info Was Changed
 #To Do
 Search For Term
 	[Arguments]	${SEARCH BAR}	${SEARCH TERM}	
-	Click Element	xpath=//a[@id = "header-search-trigger"/span
+	Click Element	xpath=//a[@id = 'header-search-trigger']/span
 	Clear Element Text	${SEARCH BAR}
 	Input Text	${SEARCH BAR}	${SEARCH TERM}
-	Click Button	xpath=//form[@id="search_mini_form"]//button[@type="submit"]
+	Click Button	xpath=//form[@id='search_mini_form']//button[@type='submit']
 
 #assumes that browser is currently on the product page. Uses Product name and product description and looks for an example of the search term
 Check That Product Is Related
 	[Arguments]	${SEARCH TERM}
-	${PRODUCT NAME}=	Get Text	xpath=div[@class="product-name"]
-	${PRODUCT DESCRIPTION}=		Get Text	xpath=//*[contains(@class,"description")]
+	${PRODUCT NAME}=	Get Text	xpath=//div[@class='product-name']
+	${PRODUCT DESCRIPTION}=		Get Text	xpath=//*[contains(@class,'description')]
 	${PRODUCT DETAILS}=	Catenate	${PRODUCT NAME}		${PRODUCT DESCRIPTION}
 	Should Contain	${PRODUCT DETAILS}	${SEARCH TERM}
 
 #To Do
 #Gets the name of the first product on the listing page
 Get Name Of First Product
-	${SPECIFIC NAME} =	Get Text	xpath=//*[@class = "category-products"]//li[@class = "item"]//*[@class = "product-name"]
+	${SPECIFIC NAME} =	Get Text	xpath=//*[@class = 'category-products']//li[@class = 'item']//*[@class = 'product-name']
 	[Return]	${SPECIFIC NAME}
 
 
@@ -274,7 +279,7 @@ Get Name Of First Product
 #Checks to see if the product was at least found on the listing page
 Check That Product Is On Listing Page
 	[Arguments]	${SEARCH PRODUCT}
-	Element Should Be Visible	xpath=//*[@class = "product-name" and contains(text(),"${SEARCH PRODUCT}")]
+	Element Should Be Visible	xpath=//*[@class = 'product-name' and contains(text(),'${SEARCH PRODUCT}')]
 	
 
 Go To Listing Page
@@ -293,13 +298,13 @@ Travel To Listing Page
 #Sort Listing page by sort argument using the select dropdown. Assumes that you're on the listing page (duh)	
 Sort Listing Page 
 	[Arguments]	${SORT}
-	Click Element	xpath=*[@class="sort-by"]//select
-	Click Element	xpath=*[@class="sort-by"]//select/option[contains(text(),"${SORT}")]	
+	Click Element	xpath=*[@class='sort-by']//select
+	Click Element	xpath=*[@class='sort-by']//select/option[contains(text(),'${SORT}')]	
 
 # To Do
 # Basically just click the first product on the listing page. Assumes browser is on a listing page
 Click First Product
-	Click Element	xpath=//div[@class="category-products"]//*[@class = "product-name"]/a	
+	Click Element	xpath=//div[@class='category-products']//*[@class = 'product-name']/a	
 
 #To Do - Write a function in a different library that will compare strings 
 Check Page Is Sorted By Name
@@ -310,25 +315,32 @@ Check Page Is Sorted By Name
 Check Page Is Sorted By Price
 
 
+
+#Sets the filter by clicking on a brand in the filter bar
+Filter Page By Brand
+	[Arguments]	${BRAND FILTER}
+	Click Element	xpath=//a[text() = '${BRAND FILTER}')]
+
 #To Do
 #Sets the filter on the category listing page by clicking a link in the filter bar that contains both the maximum and minimum price (hopefully hitting the price filter lol). Assumes that you're on a listing page.
-Filter Page
+Filter Page By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
-	Click Element	xpath=//*[@id="narrow-by-list"]//a[contains(text(),"${MAXIMUM PRICE}") and contains(text(), "${MINUMUM PRICE}")]
+	Click Element	xpath=//*[@id='narrow-by-list']//a[contains(text(),'${MAXIMUM PRICE}') and
+contains(text(), '${MINIMUM PRICE}')]
 
 #To Do
 #Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
 Check Page Is Filtered By Brand
 	[Arguments]	${BRAND FILTER}
-	@{BRAND LIST}	Get Webelements		xpath=//[@class="product-info"]/*[@class="brand"]
+	@{BRAND LIST}	Get Webelements		xpath=//[@class='product-info']/*[@class='brand']
 	:FOR	${BRAND}	IN	@{BRAND LIST}
 	\	${TEXT}=	Get Text	${BRAND}
 	\	Should Contain	${BRAND}	${BRAND FILTER}
 
 #To Do
 Check Page Is Filtered By Price
-	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}	
-	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,"product-price-")]
+	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
+	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,'product-price-')]
 	:FOR	${PRICE}	IN	@{PRICE LIST}
 	\	${TEXT}=	Get Text	${BRAND}
 	\	${FLOAT}=	Convert To Number	${TEXT.strip('$')}
@@ -337,24 +349,24 @@ Check Page Is Filtered By Price
 
 #To Do
 #Basically clicks the remove item button associated with a product name. Assumes the browser is on the cart page
-
+Remove Product From Cart
 	[Arguments]	${PRODUCT NAME}
-	Click Button	xpath=//table[@id="shopping-cart-table"]//tr[contains(text(), "${PRODUCT NAME}"]//*[@class = "Remove Item"]
+	Click Button	xpath=//table[@id='shopping-cart-table']//tr[contains(text(), '${PRODUCT NAME}']//*[@class = 'Remove Item']
 	
 
 #To Do 
 #Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
 Check Product Was Removed From Cart	${PRODUCT NAME}
 	[Arguments]	${PRODUCT NAME}
-	Element Should Not Contain	xpath=//table=[@id="shopping-cart-table"]	${PRODUCT NAME}
+	Element Should Not Contain	xpath=//table=[@id='shopping-cart-table']	${PRODUCT NAME}
 
 #To Do
 #Changes the number in the quantity field associated with the product name, and then clicks the update quantity button. Assumes that the browser is on the cart page
 Change Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME} 	${QUANITTY}
-	Clear Element Text	xpath=table[@id="shopping-cart-table"//[@class="product-name" and contains(text(), "${PRODUCT NAME}"]/../../input[@title="Qty"]
-	Input Text	xpath=table[@id="shopping-cart-table"//[@class="product-name" and contains(text(), "${PRODUCT NAME}"]/../../input[@title="Qty"]		${QUANTITY}
-	Click Button	xpath=//*[@class = "btn-update"]
+	Clear Element Text	xpath=table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']
+	Input Text	xpath=table[@id='shopping-cart-table'//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']		${QUANTITY}
+	Click Button	xpath=//*[@class = 'btn-update']
 
 
 Click Login Button
@@ -369,7 +381,7 @@ Login Should Have Failed
 
 #To Do
 Get Product Name
-	${PRODUCT NAME}=	Get Text	xpath=//*[@class = "product-name"]	
+	${PRODUCT NAME}=	Get Text	xpath=//*[@class = 'product-name']	
 	[Return]	${PRODUCT NAME}
 
 Add Simple Product To Cart
@@ -387,12 +399,12 @@ Add Configurable Product To Cart
 #Opens the quickview of the first product on the cart. Assumes browser is on listing page
 Open Quickview
 	[Arguments]	
-	Mouse Over	class=product-image
-	Click Element	class=quickview
+	Mouse Over	xpath=//*[@class='product-image']
+	Click Element	xpath=//*[@class='quickview']
 
 #Switches to Quickview frame lol
 Switch To Quickview Frame
-	Select Frame	xpath=//iframe[contains(@src, "quickview")]
+	Select Frame	xpath=//iframe[contains(@src, 'quickview')]
 
 #Switches to default frame. Used to get away from quickview frame
 Switch To Default Frame
@@ -401,7 +413,7 @@ Switch To Default Frame
 #To Do
 #Gets the product name in the first open quickview. Assumes that you're on the quickview frame 
 Get Quickview Product Name
-	${PRODUCT NAME}=	Get Text	xpath =//div[@id="quickview-product-shop"]//div[@class ="product-name"]/h1
+	${PRODUCT NAME}=	Get Text	xpath =//div[@id='quickview-product-shop']//div[@class ='product-name']/h1
 	[Return] 	${PRODUCT NAME}
 
 #To Do
@@ -426,7 +438,7 @@ Log In On Checkout Page
 	[Arguments]	${USERNAME}	${PASSWORD}
 	Input Text	id=login-email	${USERNAME}
 	Input Text	id=login-password	${PASSWORD}
-	Click Button	xpath=//form[@id="login-form"]//button[@type= "submit"]	
+	Click Button	xpath=//form[@id='login-form']//button[@type= 'submit']	
 
 #To Do
 Enter Billing Information
@@ -439,8 +451,8 @@ Enter Billing Information
 	Input Text	id=billing:street1	${STREET}
 	Input Text	id=billing:city		${CITY}
 	Click Element	id=billing:region_id
-	Click Element	xpath=//select[@id= "billing:region_id"]/option[text()="${REGION}"]
-	Click Element	xpath=//$[@id="billing-buttons-container"]//span[text() = "Continue"]
+	Click Element	xpath=//select[@id= 'billing:region_id']/option[text()='${REGION}']
+	Click Element	xpath=//$[@id='billing-buttons-container']//span[text() = 'Continue']
 
 #To Do
 Enter Shipping Information
@@ -452,13 +464,13 @@ Enter Shipping Information
 	Input Text	id=shipping:telephone	${TELEPHONE}
 	Input Text	id=shipping:city	${CITY}
 	Click Element	id=shipping:region_id
-	Input Text	xpath=//select[@id="shipping:region_id"]/option[text()="${REGION}"]
-	Click Element	xpath=//$[@id="shipping-buttons-container"]//span[text() = "Continue"]
+	Input Text	xpath=//select[@id='shipping:region_id']/option[text()='${REGION}']
+	Click Element	xpath=//$[@id='shipping-buttons-container']//span[text() = 'Continue']
 
 #To Do
 #Click a shipping method. Currently hard-coded to clicking the second shipping method, but will change if need be
 Enter Shipping Method 
-	Click Element	xpath=(//input[@name="shipping method"])[2]	
+	Click Element	xpath=(//input[@name='shipping method'])[2]	
 
 
 #To Do
@@ -467,16 +479,16 @@ Enter Payment Information
 	[Arguments]	${CREDIT CARD NUMBER}	${CREDIT CARD TYPE}	${CREDIT CARD MONTH}	${CREDIT CARD YEAR}	${CREDIT CARD VERIFICATION}
 	Click Element	 id=p_method_${PAYMENT GATEWAY}
 	Click Element	id=${PAYMENT GATEWAY}_cc_type
-	Click Element	xpath=//select[@id="${PAYMENT GATEWAY}_cc_type"]//option[@value="${CREDIT CARD TYPE}"]
+	Click Element	xpath=//select[@id='${PAYMENT GATEWAY}_cc_type']//option[@value='${CREDIT CARD TYPE}']
 	Click Element	id=${PAYMENT GATEWAY}_expiration
-	Click Element	xpath=//select[@id="${PAYMENT GATEWAY}_expiration"]//option[@value="${CREDIT CARD MONTH}"]
+	Click Element	xpath=//select[@id='${PAYMENT GATEWAY}_expiration']//option[@value='${CREDIT CARD MONTH}']
 	Click Element	id=${PAYMENT GATEWAY}_expiration_yr
-	Click Element	//select[@id = "${PAYMENT GATEWAY}_expiration_yr"]//option[@value = "${CREDIT CARD YEAR}"]
-	Input Text	xpath=//select[@id="${PAYMENT GATEWAY}_cc_number"]	${CREDIT CARD NUMBER}
-	Input Text	xpath=//select[@id="${PAYMENT GATEWAY}_cc_cid"]		${CREDIT CARD VERIFICATION}
-	Click Button	xpath=//button[@onclick="payment.save()"]
+	Click Element	//select[@id = '${PAYMENT GATEWAY}_expiration_yr']//option[@value = '${CREDIT CARD YEAR}']
+	Input Text	xpath=//select[@id='${PAYMENT GATEWAY}_cc_number']	${CREDIT CARD NUMBER}
+	Input Text	xpath=//select[@id='${PAYMENT GATEWAY}_cc_cid']		${CREDIT CARD VERIFICATION}
+	Click Button	xpath=//button[@onclick='payment.save()']
 
 
 #It all comes together. Assumes browser is at the Order Review step of the checkout. 
 Place Order
-	Click Button	xpath=//button[contains(@class, "btn-checkout"]
+	Click Button	xpath=//button[contains(@class, 'btn-checkout']

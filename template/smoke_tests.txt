@@ -3,7 +3,9 @@ Documentation		A base set of tests to run on sites to test basic functionality
 Resource		resource.txt
 Test Setup		Run Keywords 	Open Browser 	${HOME PAGE}	${BROWSER}
 ...			AND	Maximize Browser Window
-...			AND 	Close Newsletter Popup
+...			AND 	Set Selenium Speed	${DELAY}
+...			AND	Set Selenium Timeout	10
+...			AND 	Close Newsletter Popup 	${CLOSE NEWSLETTER BUTTON}	${NEWSLETTER OVERLAY}
 Test Teardown		Close Browser
 
 
@@ -73,12 +75,12 @@ Test Sort By Price
 
 Test Filter By Brand
 	Go To Listing Page     ${LISTING PAGE}
-	Filter Page	${BRAND FILTER}
+	Filter Page By Brand	${BRAND FILTER}
 	Check Page Is Filtered By Brand		${BRAND FILTER}
 
 Test Filter By Price
 	Go To Listing Page     ${LISTING PAGE}
-	Filter Page	${MAXIMUM PRICE}	${MINUMUM PRICE}	
+	Filter Page By Price	${MAXIMUM PRICE}	${MINIMUM PRICE}	
 	Check Page Is Filtered By Price		${MAXIMUM PRICE}	${MINIMUM PRICE}
 
 
@@ -86,8 +88,8 @@ Test Add Simple Product To Cart     ${QUANTITY}
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}
 	Check Add To Cart Confirmation
-	${PRODUCT NAME}	=	Get Product Name
-	Go To Cart Page
+	${PRODUCT NAME}=	Get Product Name
+	Go To Cart Page		${CART URL}
 	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}	
 	
 Test Add Configurable Product To Cart
@@ -111,14 +113,14 @@ Test Add From Quickview
 Test Remove Simple Product From Cart
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}
-	Go To Cart Page
+	Go To Cart Page		${CART URL}
 	Remove Product From Cart	${SIMPLE PRODUCT}
 	Check Product Was Removed From Cart	${SIMPLE PRODUCT}
 
 Test Update Simple Product Quantity
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}
-	Go To Cart Page
+	Go To Cart Page		${CART URL}
 	Change Product Quantity In Cart		${SIMPLE PRODUCT}	${NEW QUANTITY}
 	Check Product Quantity In Cart	${SIMPLE PRODUCT}	${NEW QUANTITY}
 
