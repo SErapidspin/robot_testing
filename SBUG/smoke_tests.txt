@@ -107,6 +107,7 @@ Test Add From Quickview
 	Switch To Quickview Frame
 	Get Quickview Product Name
 	Add Simple Product To Cart     ${QUANTITY} 
+	Unselect Frame
 	Travel To Cart Page
 	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
 
@@ -142,7 +143,7 @@ Test Checkout As Guest
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Checkout Page
-	Click Button	xpath=//span[text() = "Continue as Guest"]
+	Click Element	xpath=//span[text() = "Continue as Guest"]
 	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
 	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
 	Enter Shipping Method
@@ -155,7 +156,8 @@ Test Critical Path
 	Go To Product Page
 	Add Product To Cart
 	Check Add To Cart Confirmation
-	Click Button	//div[@class="minicart-actions"]/a[@class="cart-link"]
+	Travel To Cart Page
+	Travel To Checkout Page
 	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
 	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
 	Enter Shipping Method

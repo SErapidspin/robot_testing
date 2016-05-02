@@ -17,7 +17,7 @@ Test Teardown		Close Browser
 Test Successful Signup
 	Go To Login Page
 	Click Register Button		${REGISTER BUTTON}
-	Register Account Credentials	${FIRST NAME}	${LAST NAME}	${EMAIL ADDRESS}	${PASSWORD}
+	Register Account Credentials	${FIRST NAME}	${LAST NAME}	${EMAIL ADDRESS}	${VALID PASSWORD}
 	User Should Be On Account Dashboard
 
 
@@ -60,7 +60,7 @@ Test General Search
 Test Specific Search
 	Go To Listing Page     ${LISTING PAGE}
 	${SPECIFIC PRODUCT}= 	Get Name Of First Product
-	Search For Term		${SPECIFIC PRODUCT}
+	Search For Term		${SEARCH BAR}	${SPECIFIC PRODUCT}
 	Check That Product Is On Listing Page	${SPECIFIC PRODUCT}
 
 Test Sort By Name
@@ -107,44 +107,47 @@ Test Add From Quickview
 	Switch To Quickview Frame
 	Get Quickview Product Name
 	Add Simple Product To Cart     ${QUANTITY} 
+	Unselect Frame
 	Travel To Cart Page
 	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
 
 Test Remove Simple Product From Cart
 	Go To Product Page	${SIMPLE PRODUCT}
+	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Cart Page		${CART URL}
-	Remove Product From Cart	${SIMPLE PRODUCT}
-	Check Product Was Removed From Cart	${SIMPLE PRODUCT}
+	Remove Product From Cart	${PRODUCT NAME}
+	Check Product Was Removed From Cart	${PRODUCT NAME}
 
 Test Update Simple Product Quantity
 	Go To Product Page	${SIMPLE PRODUCT}
+	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Cart Page		${CART URL}
-	Change Product Quantity In Cart		${SIMPLE PRODUCT}	${NEW QUANTITY}
-	Check Product Quantity In Cart	${SIMPLE PRODUCT}	${NEW QUANTITY}
+	Change Product Quantity In Cart		${PRODUCT NAME}		${NEW QUANTITY}
+	Check Product Quantity In Cart	${PRODUCT NAME}		${NEW QUANTITY}
 
 # To Do
 Test Logged In Checkout 
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}	
 	Go To Checkout Page
-	Log In On Checkout Page
-	Enter Billing Information
-	Enter Shipping Information
+	Log In On Checkout Page		${CORRECT USERNAME}	${CORRECT PASSWORD}
+	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
+	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
 	Enter Shipping Method
-	Enter Payment Information
+	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	
 #To Do
 Test Checkout As Guest
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart     ${QUANTITY}
 	Go To Checkout Page
-	Click Button	xpath=//span[text() = "Continue as Guest"]
-	Enter Billing Information
-	Enter Shipping Information
+	Click Element	xpath=//span[text() = "Continue as Guest"]
+	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
+	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
 	Enter Shipping Method
-	Enter Payment Information
+	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 
 #Write keywords for
 Test Critical Path
@@ -153,10 +156,11 @@ Test Critical Path
 	Go To Product Page
 	Add Product To Cart
 	Check Add To Cart Confirmation
-	Click Button	//div[@class="minicart-actions"]/a[@class="cart-link"]
-	Enter Billing Information
-	Enter Shipping Information
+	Travel To Cart Page
+	Travel To Checkout Page
+	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
+	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
 	Enter Shipping Method
-	Enter Payment Information
+	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	Place Order
 

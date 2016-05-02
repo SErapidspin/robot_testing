@@ -49,8 +49,8 @@ ${CHECKOUT URL}		https://www.snugglebugz.ca/checkout/onepage/
 ${CHECKOUT BUTTON}	class=btn-checkout
 ${PAYMENT GATEWAY}		monerisvault
 ${BRAND FILTER}		AppleCheeks	
-${MAXIMUM PRICE}	0.00
-${MINIMUM PRICE}	999.99
+${MAXIMUM PRICE}	999.99
+${MINIMUM PRICE}	0.00
 ${CONFIGURATION}	xpath=//select[contains(@id, 'attribute')]
 ${CONFIGURATION OPTION}		xpath=//option[contains(text(), 'Black')]	
 ${QUANTITY}		1
@@ -116,14 +116,14 @@ Check Product Was Added To Cart
 #Checks if there's a product in the cart that contains that product name. Assumes user is on the cart page
 Check Product Is In Cart
 	[Arguments]	${PRODUCT NAME}	
-	Element Should Be Visible	xpath=//table[@id= 'shopping-cart-table']//*[@class = 'product-name']//*[contains(text(),'${PRODUCT NAME)']
+	Element Should Be Visible	xpath=//table[@id= 'shopping-cart-table']//*[@class = 'product-name']//*[contains(text(),'${PRODUCT NAME}')]
 	
 
 
 #Checks if there's a quantity field associated with that product name in the cart. Assumes user is on the cart page
 Check Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME}		${INTENDED QUANTITY} 
-	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id='shopping-cart-table'//[@class='product-name' and contains(text(), '${PRODUCT NAME}')]/../../input[@title='Qty']
+	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}')]/../../input[@title='Qty']
 	Should Be Equal		${ACTUAL QUANTITY}	${INTENDED QUANTITY}
 
 # To Do
@@ -141,6 +141,11 @@ Travel To Cart Page
 	Wait Until Element Is Visible	xpath=//a[@class='cart-link']	
 	Click Element	xpath=//a[@class='cart-link']
 	Location Should Be	${CART URL}
+
+#Travels to the checkout page. Assumes that you're on the cart page
+Travel To Checkout Page
+	Click Element	xpath=//*[contains(@class, "btn-proceed-checkout")]
+	Location Should Be	${CHECKOUT URL}
 
 # Close that damned newsletter popup
 Close Newsletter Popup
@@ -235,28 +240,28 @@ Check Account Address Was Changed
 
 Go To Account Information Page
 	Go To	${ACCOUNT INFORMATION URL}
-	Location Should Be 	${ACCOUNT INFORMATION URL}	OR	https://www.snugglebugz.ca/customer/account/edit/
+	Location Should Contain		${ACCOUNT INFORMATION URL}
 
 
 #To Do
 # Under the assumption that the user is on the Account Dashboard page
 Travel To Account Information Page
 	Click Element	xpath=//div[contains(@class,"block-account")]//*[text()="Account Information"]
-	Location Should Be	${ACCOUNT INFORMATION URL}
+	Location Should Contain		${ACCOUNT INFORMATION URL}
 
 Change Account Info
 	[Arguments]	${FIRST NAME}	${LAST NAME}
 	Input Text	id=firstname	${FIRST NAME}
 	Input Text	id=lastname	${LAST NAME}
-	Click Button	xpath=//span[text() = 'Save']	
+	Click Element	xpath=//span[text() = 'Save']	
 
 #To Do
 #Checks the contents of the first and last name fields to see of the values were changed
 Check Account Info Was Changed
 	[Arguments] 	${FIRST NAME}	${LAST NAME}	
 	Go To Account Information Page
-	Element Should Contain	id=firstname	${FIRST NAME}
-	Element Should Contain	id=lastname	${LAST NAME}
+	Textfield Value Should Be	id=firstname	${FIRST NAME}
+	Textfield Value Should Be	id=lastname	${LAST NAME}
 
 #To Do
 Search For Term
@@ -296,9 +301,10 @@ Go To Listing Page
 
 
 #Difference between Travel and Go to: Travel tries to go to a location naturally (mouse clicks and hovers), Go To simply goes to URL
-#To do
+#To do:	arguments to click different links in the header nav
+#Hard Coded to click the 'Just Arrived' link in the b
 Travel To Listing Page
-	
+	Click Element	xpath=//nav[@id='nav']//a[text() = "Just Arrived"]
 	
  
 #To Do
@@ -326,7 +332,7 @@ Check Page Is Sorted By Price
 #Sets the filter by clicking on a brand in the filter bar
 Filter Page By Brand
 	[Arguments]	${BRAND FILTER}
-	Click Link	xpath=(//a[text() = '${BRAND FILTER}'])[3]
+	Click Link	xpath=//dl[@id="narrow-by-list"]//a[contains(text() ,'${BRAND FILTER}')]
 
 #To Do
 #Sets the filter on the category listing page by clicking a link in the filter bar that contains both the maximum and minimum price (hopefully hitting the price filter lol). Assumes that you're on a listing page.
@@ -339,7 +345,7 @@ Filter Page By Price
 #Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
 Check Page Is Filtered By Brand
 	[Arguments]	${BRAND FILTER}
-	@{BRAND LIST}	Get Webelements		xpath=//[@class='product-info']/*[@class='brand']
+	@{BRAND LIST}=	Get Webelements		xpath=//*[@class='product-info']/*[@class='brand']
 	:FOR	${BRAND}	IN	@{BRAND LIST}
 	\	${TEXT}=	Get Text	${BRAND}
 	\	Should Contain	${BRAND}	${BRAND FILTER}
@@ -349,10 +355,10 @@ Check Page Is Filtered By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
 	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,'product-price-')]
 	:FOR	${PRICE}	IN	@{PRICE LIST}
-	\	${TEXT}=	Get Text	${BRAND}
+	\	${TEXT}=	Get Text	${PRICE}
 	\	${FLOAT}=	Convert To Number	${TEXT.strip('$')}
-	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	Price is lower than minimum price!
-	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	Price is higher than maximum price!
+	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	Price '${FLOAT}' is lower than minimum price '${MINIMUM PRICE}'!
+	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	Price '${FLOAT}' is higher than maximum price '${MAXIMUM PRICE}!
 
 #To Do
 #Basically clicks the remove item button associated with a product name. Assumes the browser is on the cart page
@@ -450,7 +456,7 @@ Log In On Checkout Page
 
 #To Do
 Enter Billing Information
-	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}	${PASS}
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Input Text	id=billing:firstname	${FIRST NAME}
 	Input Text	id=billing:lastname	${LAST NAME}
 	Input Text	id=billing:email	${EMAIL}
@@ -460,11 +466,11 @@ Enter Billing Information
 	Input Text	id=billing:city		${CITY}
 	Click Element	id=billing:region_id
 	Click Element	xpath=//select[@id= 'billing:region_id']/option[text()='${REGION}']
-	Click Element	xpath=//$[@id='billing-buttons-container']//span[text() = 'Continue']
+	Click Element	xpath=//*[@id='billing-buttons-container']//span[text() = 'Continue']
 
 #To Do
 Enter Shipping Information
-	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}	${PASS}
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Input Text	id=shipping:firstname	${FIRST NAME}
 	Input Text	id=shipping:lastname	${LAST NAME}
 	Input Text	id=shipping:email	${EMAIL}
@@ -473,7 +479,7 @@ Enter Shipping Information
 	Input Text	id=shipping:city	${CITY}
 	Click Element	id=shipping:region_id
 	Input Text	xpath=//select[@id='shipping:region_id']/option[text()='${REGION}']
-	Click Element	xpath=//$[@id='shipping-buttons-container']//span[text() = 'Continue']
+	Click Element	xpath=//*[@id='shipping-buttons-container']//span[text() = 'Continue']
 
 #To Do
 #Click a shipping method. Currently hard-coded to clicking the second shipping method, but will change if need be

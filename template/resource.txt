@@ -6,7 +6,7 @@ Library		Selenium2Library
 
 
 *** Variables ***
-${DELAY}			0	
+${DELAY}			0
 ${VALID USERNAME}		apang@demacmedia.com
 ${VALID PASSWORD}		testing123
 
@@ -22,10 +22,11 @@ ${CORRECT USERNAME}	apang+3@demacmedia.com
 ${CORRECT PASSWORD}	testing123	
 ${ACCOUNT DASH}		https://www.snugglebugz.ca/customer/account/	
 ${EMAIL ADDRESS}	apang+robot@demacmedia.com
-${REGISTER BUTTON}	xpath=(//form[@id='login-form']//a[@title='Register'])[2]
+${REGISTER BUTTON}	xpath=//*[@id="login-form"]/div/div[1]/div[2]/a
+${REGISTER URL}		https://www.snugglebugz.ca/customer/account/create/
 ${ACCOUNT INFORMATION URL}	https://www.snugglebugz.ca/customer/account/edit	
 ${ADDRESS BOOK URL}	https://www.snugglebugz.ca/customer/address/
-${CART URL}		http://www.snugglebugz.ca/checkout/cart
+${CART URL}		http://www.snugglebugz.ca/checkout/cart/
 ${LISTING PAGE}		http://www.snugglebugz.ca/just-arrived.html
 ${SEARCH BAR}		id=search
 ${GENERAL SEARCH TERM}		stroller
@@ -34,17 +35,22 @@ ${FIRST NAME}		Andrew
 ${NEW FIRST NAME}	Chris
 ${LAST NAME}		Pang
 ${NEW LAST NAME}	Redfield
+${TELEPHONE}		1234567890
 ${NEW TELEPHONE}	9056571111
+${STREET}		211 Yonge Street
 ${NEW STREET}		123 Sesame
+${CITY}			Toronto
 ${NEW CITY}		Montreal
+${REGION}		Ontario
 ${NEW REGION}		Quebec
+${ZIP}			M5B1M4
 ${NEW ZIP}		1a2a3a
 ${CHECKOUT URL}		https://www.snugglebugz.ca/checkout/onepage/
 ${CHECKOUT BUTTON}	class=btn-checkout
 ${PAYMENT GATEWAY}		monerisvault
 ${BRAND FILTER}		AppleCheeks	
-${MAXIMUM PRICE}	0.00
-${MINIMUM PRICE}	999.99
+${MAXIMUM PRICE}	999.99
+${MINIMUM PRICE}	0.00
 ${CONFIGURATION}	xpath=//select[contains(@id, 'attribute')]
 ${CONFIGURATION OPTION}		xpath=//option[contains(text(), 'Black')]	
 ${QUANTITY}		1
@@ -54,7 +60,7 @@ ${CREDIT CARD YEAR}	2018
 
 
 #Perhaps the below should be specified in the command line?
-${BROWSER}		firefox
+${BROWSER}		chrome
 
 *** Keywords ***
 Open Browser To Product Page 
@@ -110,14 +116,14 @@ Check Product Was Added To Cart
 #Checks if there's a product in the cart that contains that product name. Assumes user is on the cart page
 Check Product Is In Cart
 	[Arguments]	${PRODUCT NAME}	
-	Element Should Be Visible	xpath=table[@id= 'shopping-cart-table']//*[@class = 'product-name' and contains(text(),'${PRODUCT NAME}']
+	Element Should Be Visible	xpath=//table[@id= 'shopping-cart-table']//*[@class = 'product-name']//*[contains(text(),'${PRODUCT NAME}')]
 	
 
 
 #Checks if there's a quantity field associated with that product name in the cart. Assumes user is on the cart page
 Check Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME}		${INTENDED QUANTITY} 
-	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id='shopping-cart-table'//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']
+	${ACTUAL QUANTITY}=	Get Value	xpath=table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}')]/../../input[@title='Qty']
 	Should Be Equal		${ACTUAL QUANTITY}	${INTENDED QUANTITY}
 
 # To Do
@@ -131,10 +137,15 @@ Check Add To Cart Confirmation
 Travel To Cart Page
 # If you just added to the page, there'll be a minicart open already and that'll mess everything up
 	Wait Until Element Is Not Visible	id=header-cart	10
-	Click Element	id=header-minicart-01
+	Click Element	xpath=//div[@id='header-minicart-01']
 	Wait Until Element Is Visible	xpath=//a[@class='cart-link']	
 	Click Element	xpath=//a[@class='cart-link']
 	Location Should Be	${CART URL}
+
+#Travels to the checkout page. Assumes that you're on the cart page
+Travel To Checkout Page
+	Click Element	xpath=//*[contains(@class, "btn-proceed-checkout")]
+	Location Should Be	${CHECKOUT URL}
 
 # Close that damned newsletter popup
 Close Newsletter Popup
@@ -167,8 +178,7 @@ Open Browser To Login Page
 Click Register Button
 	[Arguments]	${REGISTER BUTTON}
 	Wait Until Page Contains Element	${REGISTER BUTTON}	10
-	Wait Until Element Is Visible	${REGISTER BUTTON}	10
-	Click Button	${REGISTER BUTTON}
+	Click Element	${REGISTER BUTTON}
 	Location Should Be 	${REGISTER URL}
 
 #To Do
@@ -176,7 +186,7 @@ Register Account Credentials
 	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL ADDRESS}	${PASSWORD}	 
 	Input Text	id=firstname	${FIRST NAME}
 	Input Text	id=lastname	${LAST NAME}
-	Input Text	id=email_addres		${EMAIL ADDRESS}
+	Input Text	id=email_address		${EMAIL ADDRESS}
 	Input Text	id=password	${PASSWORD}
 	Input Text	id=confirmation		${PASSWORD}
 	Click Button	xpath=//form[@id= 'form-validate']//button[@type='submit']
@@ -194,10 +204,10 @@ Change Address
 	Input Text	id=telephone	${TELEPHONE}
 	Input Text	id=street_1	${STREET}
 	Input Text	id=city		${CITY}
-	Click Element	xpath=//select[@id='region_id'/..']	
+	Click Element	xpath=//select[@id='region_id']	
 	Click Element	xpath=//select[@id='region_id']/option[text()='${REGION}']
 	Input Text	id=zip		${ZIP}
-	Click Button	title=Save Address
+	Click Button	xpath=//*[@title='Save Address']
 
 #To Do
 Go To Edit Address Page
@@ -208,9 +218,10 @@ Go To Edit Address Page
 	
 #To Do
 #Under the assumption that the user is on the account dashboard
-Travel To Edit Address 
-	Click Element
-xpath=//div[contains(@class,'block-account')]//a[text()='Address Book']
+Travel To Edit Address
+	Wait Until Element Is Visible 	xpath=//div[contains(@class,'block-account')]//*[text()='Address Book']
+	Click Element	xpath=//div[contains(@class,'block-account')]//*[text()='Address Book']
+	Wait Until Element Is Visible	xpath=//a[text() = 'Change Billing Address']	5
 	Click Element	xpath=//a[text() = 'Change Billing Address']
 	Location Should Contain 	www.snugglebugz.ca/customer/address/edit/id
 
@@ -229,28 +240,28 @@ Check Account Address Was Changed
 
 Go To Account Information Page
 	Go To	${ACCOUNT INFORMATION URL}
-	Location Should Be 	${ACCOUNT INFORMATION URL}
+	Location Should Contain		${ACCOUNT INFORMATION URL}
 
 
 #To Do
 # Under the assumption that the user is on the Account Dashboard page
 Travel To Account Information Page
-	Click Element	xpath=//div[@class = 'block-account']//strong[text() = 'Account Information']	
-	Location Should Be	${ACCOUNT INFORMATION URL}
+	Click Element	xpath=//div[contains(@class,"block-account")]//*[text()="Account Information"]
+	Location Should Contain		${ACCOUNT INFORMATION URL}
 
 Change Account Info
 	[Arguments]	${FIRST NAME}	${LAST NAME}
 	Input Text	id=firstname	${FIRST NAME}
 	Input Text	id=lastname	${LAST NAME}
-	Click Button	xpath=//span[text() = 'Save']	
+	Click Element	xpath=//span[text() = 'Save']	
 
 #To Do
 #Checks the contents of the first and last name fields to see of the values were changed
 Check Account Info Was Changed
 	[Arguments] 	${FIRST NAME}	${LAST NAME}	
 	Go To Account Information Page
-	Element Should Contain	id=firstname	${FIRST NAME}
-	Element Should Contain	id=lastname	${LAST NAME}
+	Textfield Value Should Be	id=firstname	${FIRST NAME}
+	Textfield Value Should Be	id=lastname	${LAST NAME}
 
 #To Do
 Search For Term
@@ -266,12 +277,13 @@ Check That Product Is Related
 	${PRODUCT NAME}=	Get Text	xpath=//div[@class='product-name']
 	${PRODUCT DESCRIPTION}=		Get Text	xpath=//*[contains(@class,'description')]
 	${PRODUCT DETAILS}=	Catenate	${PRODUCT NAME}		${PRODUCT DESCRIPTION}
+	Log	'Product found: ${PRODUCT NAME}'
 	Should Contain	${PRODUCT DETAILS}	${SEARCH TERM}
 
 #To Do
 #Gets the name of the first product on the listing page
 Get Name Of First Product
-	${SPECIFIC NAME} =	Get Text	xpath=//*[@class = 'category-products']//li[@class = 'item']//*[@class = 'product-name']
+	${SPECIFIC NAME} =	Get Text	xpath=//*[@class = 'category-products']//li[contains(@class,"item")]//*[@class = "product-name"]
 	[Return]	${SPECIFIC NAME}
 
 
@@ -279,7 +291,7 @@ Get Name Of First Product
 #Checks to see if the product was at least found on the listing page
 Check That Product Is On Listing Page
 	[Arguments]	${SEARCH PRODUCT}
-	Element Should Be Visible	xpath=//*[@class = 'product-name' and contains(text(),'${SEARCH PRODUCT}')]
+	Element Should Be Visible	xpath=//div[@class = "category-products"]//*[@class = 'product-name']/*[contains(text(),'${SEARCH PRODUCT}')]
 	
 
 Go To Listing Page
@@ -289,17 +301,18 @@ Go To Listing Page
 
 
 #Difference between Travel and Go to: Travel tries to go to a location naturally (mouse clicks and hovers), Go To simply goes to URL
-#To do
+#To do:	arguments to click different links in the header nav
+#Hard Coded to click the 'Just Arrived' link in the b
 Travel To Listing Page
-	
+	Click Element	xpath=//nav[@id='nav']//a[text() = "Just Arrived"]
 	
  
 #To Do
 #Sort Listing page by sort argument using the select dropdown. Assumes that you're on the listing page (duh)	
 Sort Listing Page 
 	[Arguments]	${SORT}
-	Click Element	xpath=*[@class='sort-by']//select
-	Click Element	xpath=*[@class='sort-by']//select/option[contains(text(),'${SORT}')]	
+	Click Element	xpath=//*[@class='sort-by']//select
+	Click Element	xpath=//*[@class='sort-by']//select/option[contains(text(),'${SORT}')]	
 
 # To Do
 # Basically just click the first product on the listing page. Assumes browser is on a listing page
@@ -319,20 +332,20 @@ Check Page Is Sorted By Price
 #Sets the filter by clicking on a brand in the filter bar
 Filter Page By Brand
 	[Arguments]	${BRAND FILTER}
-	Click Element	xpath=//a[text() = '${BRAND FILTER}')]
+	Click Link	xpath=//dl[@id="narrow-by-list"]//a[contains(text() ,'${BRAND FILTER}')]
 
 #To Do
 #Sets the filter on the category listing page by clicking a link in the filter bar that contains both the maximum and minimum price (hopefully hitting the price filter lol). Assumes that you're on a listing page.
 Filter Page By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
-	Click Element	xpath=//*[@id='narrow-by-list']//a[contains(text(),'${MAXIMUM PRICE}') and
-contains(text(), '${MINIMUM PRICE}')]
+#Looks ugly, but the xpath below basically finds a link in the filter bar that contains the maximum and minimum price
+	Click Element	xpath=//*[@id='narrow-by-list']//a[.//span[@class ="price" and contains(text(),"${MINIMUM PRICE}")] and .//span[@class ="price" and contains(text(),"${MAXIMUM PRICE}")]]
 
 #To Do
 #Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
 Check Page Is Filtered By Brand
 	[Arguments]	${BRAND FILTER}
-	@{BRAND LIST}	Get Webelements		xpath=//[@class='product-info']/*[@class='brand']
+	@{BRAND LIST}=	Get Webelements		xpath=//*[@class='product-info']/*[@class='brand']
 	:FOR	${BRAND}	IN	@{BRAND LIST}
 	\	${TEXT}=	Get Text	${BRAND}
 	\	Should Contain	${BRAND}	${BRAND FILTER}
@@ -342,30 +355,31 @@ Check Page Is Filtered By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
 	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,'product-price-')]
 	:FOR	${PRICE}	IN	@{PRICE LIST}
-	\	${TEXT}=	Get Text	${BRAND}
+	\	${TEXT}=	Get Text	${PRICE}
 	\	${FLOAT}=	Convert To Number	${TEXT.strip('$')}
-	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	Price is lower than minimum price!
-	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	Price is higher than maximum price!
+	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	Price '${FLOAT}' is lower than minimum price '${MINIMUM PRICE}'!
+	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	Price '${FLOAT}' is higher than maximum price '${MAXIMUM PRICE}!
 
 #To Do
 #Basically clicks the remove item button associated with a product name. Assumes the browser is on the cart page
 Remove Product From Cart
 	[Arguments]	${PRODUCT NAME}
-	Click Button	xpath=//table[@id='shopping-cart-table']//tr[contains(text(), '${PRODUCT NAME}']//*[@class = 'Remove Item']
+	Wait Until Element Is Visible	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//*[@title = 'Remove Item']	7
+	Click Element	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//*[@title = 'Remove Item']
 	
 
 #To Do 
 #Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
 Check Product Was Removed From Cart	${PRODUCT NAME}
 	[Arguments]	${PRODUCT NAME}
-	Element Should Not Contain	xpath=//table=[@id='shopping-cart-table']	${PRODUCT NAME}
+	Element Should Not Contain	xpath=//table[@id='shopping-cart-table']	${PRODUCT NAME}
 
 #To Do
 #Changes the number in the quantity field associated with the product name, and then clicks the update quantity button. Assumes that the browser is on the cart page
 Change Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME} 	${QUANITTY}
-	Clear Element Text	xpath=table[@id='shopping-cart-table']//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']
-	Input Text	xpath=table[@id='shopping-cart-table'//[@class='product-name' and contains(text(), '${PRODUCT NAME}']/../../input[@title='Qty']		${QUANTITY}
+	Clear Element Text	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title='Qty']
+	Input Text	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title='Qty']		${QUANTITY}
 	Click Button	xpath=//*[@class = 'btn-update']
 
 
@@ -376,12 +390,12 @@ User Should Be On Account Dashboard
         Location Should Be  ${ACCOUNT DASH}
 
 Login Should Have Failed
-        Location Should Be  ${LOGIN URL}
+        Location Should Be  ${LOGIN URL}  OR	https://www.snugglebugz.ca/customer/account/
 
 
 #To Do
 Get Product Name
-	${PRODUCT NAME}=	Get Text	xpath=//*[@class = 'product-name']	
+	${PRODUCT NAME}=	Get Text	xpath=//*[@class='product-name']/span[@class='h1']
 	[Return]	${PRODUCT NAME}
 
 Add Simple Product To Cart
@@ -438,11 +452,11 @@ Log In On Checkout Page
 	[Arguments]	${USERNAME}	${PASSWORD}
 	Input Text	id=login-email	${USERNAME}
 	Input Text	id=login-password	${PASSWORD}
-	Click Button	xpath=//form[@id='login-form']//button[@type= 'submit']	
+	Click Element	xpath=//form[@id='login-form']//button[@type='submit']	
 
 #To Do
 Enter Billing Information
-	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}	${PASS}
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Input Text	id=billing:firstname	${FIRST NAME}
 	Input Text	id=billing:lastname	${LAST NAME}
 	Input Text	id=billing:email	${EMAIL}
@@ -452,11 +466,11 @@ Enter Billing Information
 	Input Text	id=billing:city		${CITY}
 	Click Element	id=billing:region_id
 	Click Element	xpath=//select[@id= 'billing:region_id']/option[text()='${REGION}']
-	Click Element	xpath=//$[@id='billing-buttons-container']//span[text() = 'Continue']
+	Click Element	xpath=//*[@id='billing-buttons-container']//span[text() = 'Continue']
 
 #To Do
 Enter Shipping Information
-	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}	${PASS}
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Input Text	id=shipping:firstname	${FIRST NAME}
 	Input Text	id=shipping:lastname	${LAST NAME}
 	Input Text	id=shipping:email	${EMAIL}
@@ -465,7 +479,7 @@ Enter Shipping Information
 	Input Text	id=shipping:city	${CITY}
 	Click Element	id=shipping:region_id
 	Input Text	xpath=//select[@id='shipping:region_id']/option[text()='${REGION}']
-	Click Element	xpath=//$[@id='shipping-buttons-container']//span[text() = 'Continue']
+	Click Element	xpath=//*[@id='shipping-buttons-container']//span[text() = 'Continue']
 
 #To Do
 #Click a shipping method. Currently hard-coded to clicking the second shipping method, but will change if need be
