@@ -555,6 +555,7 @@ Enter Payment Information
 
 #It all comes together. Assumes browser is at the Order Review step of the checkout. 
 Place Order
+	Wait Until Element Is Visible	id=checkout-step-review		7
 	Click Button	xpath=//button[contains(@class, 'btn-checkout']
 
 

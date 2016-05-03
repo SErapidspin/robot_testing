@@ -165,16 +165,18 @@ Test Checkout As Guest
 #Write keywords for
 Test Critical Path As Guest
 	Travel To Listing Page
+# Should add conditionals to add first product from quickview and first product to cart in case the product at the position is not a simple product
 	Add Simple Product To Cart From Quickview	1	${QUANTITY}	
 	Travel To Product Page				1
 	Add Simple Product To Cart				${QUANTITY}
 	Check Add To Cart Confirmation			
 	Travel To Cart Page
 	Travel To Checkout Page
-	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
-	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  
+	Click Element	xpath=//span[text() = 'Continue as Guest']
+	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}    apang+99@demacmedia.com        ${NEW TELEPHONE}    ${NEW STREET}     ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${CORRECT PASSWORD}
+#Since 'use billing address as shipping address' checkout is always default clicked, will have to add a new function to unclick it
+#	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}   ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}        	 ${NEW REGION}       ${NEW ZIP}  
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
-	Wait Until Element Is Visible	id=checkout-step-review	7
 	Place Order
 
