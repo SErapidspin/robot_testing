@@ -54,15 +54,23 @@ ${MINIMUM PRICE}	0.00
 ${CONFIGURATION}	xpath=//select[contains(@id, 'attribute')]
 ${CONFIGURATION OPTION}		xpath=//option[contains(text(), 'Black')]	
 ${QUANTITY}		1
-${VALID CREDIT CARD}	5113400993928386
-${CREDIT CARD MONTH}	09
+${CREDIT CARD NUMBER}	5113400993928386
+${CREDIT CARD MONTH}	9
 ${CREDIT CARD YEAR}	2018
+${CREDIT CARD TYPE}	MC
+${CREDIT CARD VERIFICATION}	541
 
 
 #Perhaps the below should be specified in the command line?
 ${BROWSER}		chrome
 
 *** Keywords ***
+#scrolls down the screen based on the amount of pixels provided in the agrument.
+Scroll Down
+	[Arguments]	${SCROLL PIXELS}
+	Execute Javascript	window.scrollBy(0,${SCROLL PIXELS})
+
+
 Open Browser To Product Page 
 	[Arguments]	${PRODUCT PAGE}		${BROWSER}
 	Open Browser	${PRODUCT PAGE} 	${BROWSER}		
@@ -70,6 +78,14 @@ Open Browser To Product Page
 	Maximize Browser Window
 	Location Should Be	${PRODUCT PAGE}
 
+
+#Clicks to the nth (denoted by the argument) product page on the listing page. Assumes the browser is on a listing page
+Travel To Product Page
+	[Arguments]	${PRODUCT NUMBER}
+	Click Element	xpath=(//div[@class = "category-products"]//*[@class = "product-name"]/a)[${PRODUCT NUMBER}]
+
+
+# Just goes to the url provided in the argument
 Go To Product Page
 	[Arguments]	${PRODUCT PAGE}
 	Go to	${PRODUCT PAGE}
@@ -116,6 +132,7 @@ Check Product Was Added To Cart
 #Checks if there's a product in the cart that contains that product name. Assumes user is on the cart page
 Check Product Is In Cart
 	[Arguments]	${PRODUCT NAME}	
+	Log		'Checking following product is in cart: {$PRODUCT NAME}'
 	Element Should Be Visible	xpath=//table[@id= 'shopping-cart-table']//*[@class = 'product-name']//*[contains(text(),'${PRODUCT NAME}')]
 	
 
@@ -123,6 +140,7 @@ Check Product Is In Cart
 #Checks if there's a quantity field associated with that product name in the cart. Assumes user is on the cart page
 Check Product Quantity In Cart
 	[Arguments]	${PRODUCT NAME}		${INTENDED QUANTITY} 
+	Log		'Checking product ${PRODUCT NAME} has ${INTENDED QUANTITY} in cart'
 	${ACTUAL QUANTITY}=	Get Value	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//input[@title = 'Qty']
 	Should Be Equal		${ACTUAL QUANTITY}	${INTENDED QUANTITY}
 
@@ -207,6 +225,8 @@ Change Address
 	Click Element	xpath=//select[@id='region_id']	
 	Click Element	xpath=//select[@id='region_id']/option[text()='${REGION}']
 	Input Text	id=zip		${ZIP}
+# lol olark chat covers the save address button
+	Scroll Down	500
 	Click Button	xpath=//*[@title='Save Address']
 
 #To Do
@@ -345,23 +365,26 @@ Filter Page By Price
 #Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
 Check Page Is Filtered By Brand
 	[Arguments]	${BRAND FILTER}
+#	${BRAND FILTER}=	Convert To Uppercase	 ${BRAND FILTER}
 	@{BRAND LIST}=	Get Webelements		xpath=//*[@class='product-info']/*[@class='brand']
 	:FOR	${BRAND}	IN	@{BRAND LIST}
-	\	${TEXT}=	Get Text	${BRAND}
-	\	Should Contain	${BRAND}	${BRAND FILTER}
+	\	Log			${BRAND}
+	\	Element Should Contain	${BRAND}	${BRAND FILTER.upper()}
 
 #To Do
 Check Page Is Filtered By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
 	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,'product-price-')]
 	:FOR	${PRICE}	IN	@{PRICE LIST}
+	\	Log		'Price found: ${PRICE}'
 	\	${TEXT}=	Get Text	${PRICE}
 	\	${FLOAT}=	Convert To Number	${TEXT.strip('$')}
-	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	Price '${FLOAT}' is lower than minimum price '${MINIMUM PRICE}'!
-	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	Price '${FLOAT}' is higher than maximum price '${MAXIMUM PRICE}!
+	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	'Price ${FLOAT} is lower than minimum price ${MINIMUM PRICE}!'
+	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	'Price ${FLOAT} is higher than maximum price ${MAXIMUM PRICE}!'
 
 #To Do
 #Basically clicks the remove item button associated with a product name. Assumes the browser is on the cart page
+#Protip: entering ${BLANK} or \ as a parameter (default empty strings) will remove the first product in the cart
 Remove Product From Cart
 	[Arguments]	${PRODUCT NAME}
 	Wait Until Element Is Visible	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//*[@title = 'Remove Item']	7
@@ -412,9 +435,9 @@ Add Configurable Product To Cart
 #To Do
 #Opens the quickview of the first product on the cart. Assumes browser is on listing page
 Open Quickview
-	[Arguments]	
-	Mouse Over	xpath=//*[@class='product-image']
-	Click Element	xpath=//*[@class='quickview']
+	[Arguments]	${PRODUCT NUMBER}
+	Mouse Over	xpath=(//*[@class='product-image'])[${PRODUCT NUMBER}]
+	Click Element	xpath=(//*[@class='quickview'])[${PRODUCT NUMBER}]
 
 #Switches to Quickview frame lol
 Switch To Quickview Frame
@@ -431,10 +454,10 @@ Get Quickview Product Name
 	[Return] 	${PRODUCT NAME}
 
 #To Do
-#Adds a simple product to the cart from the first open quickview. (must switch to the iframe if there is one). Assumes that browser is on the listing page and that the first quickview is open
+#Adds a simple product to the cart from the quickview of the nth product on the page. (must switch to the iframe if there is one). Assumes that browser is on the listing page and that there are products on the page
 Add Simple Product To Cart From Quickview
-	[Arguments]	${QUANTITY}	
-	Open Quickview
+	[Arguments]	${PRODUCT NUMBER}	${QUANTITY}	
+	Open Quickview	${PRODUCT NUMBER}
         Switch To Quickview Frame
         Add Simple Product To Cart     ${QUANTITY}
         Unselect Frame
@@ -460,11 +483,10 @@ Log In On Checkout Page
 
 #To Do: Add password for guest checkout
 Enter Billing Information
-	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Wait Until Element Is Visible	id=checkout-step-billing
 	Input Text	id=billing:firstname	${FIRST NAME}
 	Input Text	id=billing:lastname	${LAST NAME}
-	Input Text	id=billing:email	${EMAIL}
 	Input Text	id=billing:postcode	${ZIP}
 	Input Text	id=billing:telephone	${TELEPHONE}
 	Input Text	id=billing:street1	${STREET}
@@ -495,11 +517,10 @@ Enter Billing Information As Guest
 
 #To Do
 Enter Shipping Information
-	[Arguments]	${FIRST NAME}	${LAST NAME}	${EMAIL}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
+	[Arguments]	${FIRST NAME}	${LAST NAME}	${TELEPHONE}	${STREET}	${CITY}		${REGION}	${ZIP}
 	Wait Until Element Is Visible	id=checkout-step-shipping
 	Input Text	id=shipping:firstname	${FIRST NAME}
 	Input Text	id=shipping:lastname	${LAST NAME}
-	Input Text	id=shipping:email	${EMAIL}
 	Input Text	id=shipping:postcode	${ZIP}
 	Input Text	id=shipping:telephone	${TELEPHONE}
 	Input Text	id=shipping:city	${CITY}
@@ -511,8 +532,9 @@ Enter Shipping Information
 #Click a shipping method. Currently hard-coded to clicking the second shipping method, but will change if need be
 Enter Shipping Method 
 	Wait Until Element Is Visible	id=checkout-step-shipping_method
-	Click Element	xpath=(//input[@name='shipping method'])[2]	
-
+	Wait Until Element Is Visible	xpath=(//input[@name='shipping_method'])[2]	
+	Click Element	xpath=(//input[@name='shipping_method'])[2]	
+	Click Element 	xpath=//*[@id='shipping-method-buttons-container']//span[text()='Continue']
 
 #To Do
 #Currently clicks the credit cart option. Maybe should split it into 'Enter Credit Card' and 'Enter Paypal'
@@ -526,9 +548,9 @@ Enter Payment Information
 	Click Element	xpath=//select[@id='${PAYMENT GATEWAY}_expiration']//option[@value='${CREDIT CARD MONTH}']
 	Click Element	id=${PAYMENT GATEWAY}_expiration_yr
 	Click Element	//select[@id = '${PAYMENT GATEWAY}_expiration_yr']//option[@value = '${CREDIT CARD YEAR}']
-	Input Text	xpath=//select[@id='${PAYMENT GATEWAY}_cc_number']	${CREDIT CARD NUMBER}
-	Input Text	xpath=//select[@id='${PAYMENT GATEWAY}_cc_cid']		${CREDIT CARD VERIFICATION}
-	Click Button	xpath=//button[@onclick='payment.save()']
+	Input Text	xpath=//input[@id='${PAYMENT GATEWAY}_cc_number']	${CREDIT CARD NUMBER}
+	Input Text	xpath=//input[@id='${PAYMENT GATEWAY}_cc_cid']		${CREDIT CARD VERIFICATION}
+	Click Button	xpath=//*[@onclick = "payment.save()"]
 
 
 #It all comes together. Assumes browser is at the Order Review step of the checkout. 

@@ -74,11 +74,13 @@ Test Sort By Price
 	Check Page Is Sorted By Price 
 
 Test Filter By Brand
+	[Tags]			filter	brand
 	Go To Listing Page     ${LISTING PAGE}
 	Filter Page By Brand	${BRAND FILTER}
 	Check Page Is Filtered By Brand		${BRAND FILTER}
 
 Test Filter By Price
+	[Tags]			filter	price
 	Go To Listing Page     ${LISTING PAGE}
 	Filter Page By Price	${MAXIMUM PRICE}	${MINIMUM PRICE}	
 	Check Page Is Filtered By Price		${MAXIMUM PRICE}	${MINIMUM PRICE}
@@ -103,7 +105,7 @@ Test Add Configurable Product To Cart
 #write keywords
 Test Add From Quickview
 	Go To Listing Page     ${LISTING PAGE}			
-	Open Quickview				
+	Open Quickview			1	
 	Switch To Quickview Frame
 	${PRODUCT NAME} =	Get Quickview Product Name
 	Add Simple Product To Cart     ${QUANTITY} 
@@ -129,16 +131,23 @@ Test Update Simple Product Quantity
 
 # To Do
 Test Logged In Checkout 
+	[Tags]		LoggedIn
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	${QUANTITY}	
 	Check Add To Cart Confirmation
 	Go To Checkout Page
-	Log In On Checkout Page		${CORRECT USERNAME}	${CORRECT PASSWORD}
-	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
-	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
+	Log In On Checkout Page		${EMAIL ADDRESS}	${CORRECT PASSWORD}
+	Enter Billing Information	${FIRST NAME}   ${LAST NAME}    ${NEW TELEPHONE}    ${NEW STREET}	${NEW CITY}	${NEW REGION}	${NEW ZIP}
+#	Since 'use billing address as shipping address' checkbox is always default clicked, will have to add a new function to unclick it
+#	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
-	
+	Wait Until Element Is Visible	id=checkout-step-review	7
+#Go back to the cart page and remove the added product from the cart for future tests. Prevents complications with out of stock products down the line. 
+	[Teardown]	Run Keywords	Go To Cart Page		${CART URL}
+	...		AND		Remove Product From Cart	\
+	...		AND		Close Browser
+
 #To Do: add password for guest checkout
 Test Checkout As Guest
 	Go To Product Page	${SIMPLE PRODUCT}
@@ -146,23 +155,26 @@ Test Checkout As Guest
 	Check Add To Cart Confirmation
 	Go To Checkout Page
 	Click Element	xpath=//span[text() = "Continue as Guest"]
-	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}	${CORRECT PASSWORD}
-	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL ADDRESS}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}
+#Remember to put a new email address, so that you can proceed through the checkout
+	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}     apang+99@demacmedia.com       ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}	${CORRECT PASSWORD}
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
+	Wait Until Element Is Visible	id=checkout-step-review	7
+
 
 #Write keywords for
-Test Critical Path
+Test Critical Path As Guest
 	Travel To Listing Page
-	Add Simple Product To Cart From Quickview	${QUANTITY}	
-	Go To Product Page
-	Add Product To Cart
-	Check Add To Cart Confirmation	
+	Add Simple Product To Cart From Quickview	1	${QUANTITY}	
+	Travel To Product Page				1
+	Add Simple Product To Cart				${QUANTITY}
+	Check Add To Cart Confirmation			
 	Travel To Cart Page
 	Travel To Checkout Page
 	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  ${PASSWORD}
 	Enter Shipping Information	${FIRST NAME}   ${LAST NAME}    ${EMAIL}        ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}  
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
+	Wait Until Element Is Visible	id=checkout-step-review	7
 	Place Order
 
