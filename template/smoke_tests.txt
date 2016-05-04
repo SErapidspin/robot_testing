@@ -69,6 +69,7 @@ Test Sort By Name
 	Check Page Is Sorted By Name	
 
 Test Sort By Price
+	[Tags]	sort
 	Go To Listing Page     ${LISTING PAGE}
 	Sort Listing Page	Price
 	Check Page Is Sorted By Price 
@@ -132,6 +133,7 @@ Test Update Simple Product Quantity
 # To Do
 Test Logged In Checkout 
 	[Tags]		LoggedIn
+	Log		Test
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	${QUANTITY}	
 	Check Add To Cart Confirmation
@@ -155,7 +157,7 @@ Test Checkout As Guest
 	Check Add To Cart Confirmation
 	Go To Checkout Page
 	Click Element	xpath=//span[text() = "Continue as Guest"]
-#Remember to put a new email address, so that you can proceed through the checkout
+#Remember to put a new email address, the checkout will throw an error if you're using an email that already has an account
 	Enter Billing Information As Guest	${FIRST NAME}   ${LAST NAME}     apang+99@demacmedia.com       ${NEW TELEPHONE}    ${NEW STREET}       ${NEW CITY}         ${NEW REGION}       ${NEW ZIP}	${CORRECT PASSWORD}
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}

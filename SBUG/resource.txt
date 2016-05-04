@@ -343,10 +343,19 @@ Click First Product
 Check Page Is Sorted By Name
 
 
-
-#To Do - Write a function in a different library that will compare floats 
+# Iterates through each product price on the listing page and compares it to the next one. Assumes the browser is on the lising page 
 Check Page Is Sorted By Price
-
+	@{PRICE LIST}	Get Webelements		xpath=//span[contains(@id, "product-price-")]
+	${FIRST PRICE}=	Get Text		xpath=//span[contains(@id, "product-price-")]
+	${FIRST PRICE}=	Convert To Number	 ${FIRST PRICE.strip('$')}
+	${LENGTH}=	Get Length		${PRICE LIST}
+	:FOR	${INDEX}	IN RANGE	${LENGTH}-1
+	\	${INDEX}=	Evaluate	${INDEX}+1
+	\	${SECOND PRICE}=	Get Text 	@{PRICE LIST}[${INDEX}]
+	\	${SECOND PRICE}=	Convert To Number	${SECOND PRICE.strip('$')}
+	\	Log		First Price: ${FIRST PRICE}\n Second Price: ${SECOND PRICE}
+	\	Should Be True	${SECOND PRICE} >= ${FIRST PRICE}	'Second Price ${SECOND PRICE} is lower than First Price ${FIRST PRICE}!'
+	\	${FIRST PRICE}=		Set Variable	${SECOND PRICE}
 
 
 #Sets the filter by clicking on a brand in the filter bar
@@ -362,16 +371,16 @@ Filter Page By Price
 	Click Element	xpath=//*[@id='narrow-by-list']//a[.//span[@class ="price" and contains(text(),"${MINIMUM PRICE}")] and .//span[@class ="price" and contains(text(),"${MAXIMUM PRICE}")]]
 
 #To Do
-#Gets each of the brands in each product block and then asserts that they all contain the brand that was filtered
+#Gets each of the brands in each product block and then asserts that they all contain the parameter that is inserted as an argument. Assumes the user is on the listing page
 Check Page Is Filtered By Brand
 	[Arguments]	${BRAND FILTER}
-#	${BRAND FILTER}=	Convert To Uppercase	 ${BRAND FILTER}
 	@{BRAND LIST}=	Get Webelements		xpath=//*[@class='product-info']/*[@class='brand']
 	:FOR	${BRAND}	IN	@{BRAND LIST}
 	\	Log			${BRAND}
 	\	Element Should Contain	${BRAND}	${BRAND FILTER.upper()}
 
 #To Do
+#Compares each product price on the listing page by the minimum and maximum filter provided. Assumes the user is on the listing page.
 Check Page Is Filtered By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
 	@{PRICE LIST}=	Get Webelements		xpath=//*[contains(@id,'product-price-')]
@@ -387,6 +396,7 @@ Check Page Is Filtered By Price
 #Protip: entering ${BLANK} or \ as a parameter (default empty strings) will remove the first product in the cart
 Remove Product From Cart
 	[Arguments]	${PRODUCT NAME}
+# Below xpath basically goes to the product name, and then traverses back three times to the table row element. Then, it'll look for an element with a 'Remove Item' title in it.
 	Wait Until Element Is Visible	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//*[@title = 'Remove Item']	7
 	Click Element	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//*[@title = 'Remove Item']
 	
@@ -559,4 +569,4 @@ Place Order
 	Click Button	xpath=//button[contains(@class, 'btn-checkout']
 
 
-#To do: Add Logging, Add to wishlist, various negative testing scenarios
+#To do: Add Logging, Add to wishlist, various negative testing scenarios, edit product in cart, verify price totals, 
