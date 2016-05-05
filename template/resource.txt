@@ -59,6 +59,7 @@ ${CREDIT CARD MONTH}	9
 ${CREDIT CARD YEAR}	2018
 ${CREDIT CARD TYPE}	MC
 ${CREDIT CARD VERIFICATION}	541
+${ORDER SUCCESS URL}	snugglebugz.ca/checkout/onepage/success
 
 
 #Perhaps the below should be specified in the command line?
@@ -339,11 +340,21 @@ Sort Listing Page
 Click First Product
 	Click Element	xpath=//div[@class='category-products']//*[@class = 'product-name']/a	
 
-#To Do - Write a function in a different library that will compare strings 
+
+# Iterates through each name on the listing page compares it to the next one (ascending). Assumes the browser is on the listing page
 Check Page Is Sorted By Name
+	@{PRICE LIST}	Get Webelements		xpath=//*[@class="product-name"]/a
+	${FIRST NAME}=	Get Text		xpath=//*[@class="product-name"]/a
+	${LENGTH}=	Get Length		${PRICE LIST}
+	:FOR	${INDEX}	IN RANGE	${LENGTH}-1
+	\	${INDEX}=	Evaluate	${INDEX}+1
+	\	${SECOND NAME}=	Get Text	@{PRICE LIST}[${INDEX}]
+	\	Log		First Name: ${FIRST NAME}\n Second Name: ${SECOND NAME}
+	\	Should Be True	${SECOND NAME} >= ${FIRST NAME}		'Second Name ${SECOND NAME} is not "greater" than First Name ${FIRST NAME}!'
+	\	${FIRST NAME}=	Set Variable	${SECOND NAME}
+	
 
-
-# Iterates through each product price on the listing page and compares it to the next one. Assumes the browser is on the lising page 
+# Iterates through each product price on the listing page and compares it to the next one (ascending). Assumes the browser is on the lising page. To Do: Write a function in python to compare strings
 Check Page Is Sorted By Price
 	@{PRICE LIST}	Get Webelements		xpath=//span[contains(@id, "product-price-")]
 	${FIRST PRICE}=	Get Text		xpath=//span[contains(@id, "product-price-")]
@@ -563,10 +574,15 @@ Enter Payment Information
 	Click Button	xpath=//*[@onclick = "payment.save()"]
 
 
-#It all comes together. Assumes browser is at the Order Review step of the checkout. 
+#Click order button in the checkout. Assumes browser is at the Order Review step of the checkout. 
 Place Order
 	Wait Until Element Is Visible	id=checkout-step-review		7
-	Click Button	xpath=//button[contains(@class, 'btn-checkout']
+	Click Button	xpath=//button[contains(@class, 'btn-checkout')]
 
+#Basically just checks for the various things that should indiate that the checkout was successful
+Order Should Be Successful
+	[Arguments]	${ORDER SUCCESS URL}
+	Location Should Contain	${ORDER SUCCESS URL}
+	Page Should Contain Element	xpath=//a[contains(@href,'order_id')]
 
 #To do: Add Logging, Add to wishlist, various negative testing scenarios, edit product in cart, verify price totals, 

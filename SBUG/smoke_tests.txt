@@ -6,6 +6,7 @@ Test Setup		Run Keywords 	Open Browser 	${HOME PAGE}	${BROWSER}
 ...			AND 	Set Selenium Speed	${DELAY}
 ...			AND	Set Selenium Timeout	10
 ...			AND 	Close Newsletter Popup 	${CLOSE NEWSLETTER BUTTON}	${NEWSLETTER OVERLAY}
+Force Tags		Smoke
 Test Teardown		Close Browser
 
 
@@ -15,6 +16,7 @@ Test Teardown		Close Browser
 
 *** TEST CASES ***
 Test Successful Signup
+	[Tags]	Register	Account
 	Go To Login Page
 	Click Register Button		${REGISTER BUTTON}
 	Register Account Credentials	${FIRST NAME}	${LAST NAME}	${EMAIL ADDRESS}	${VALID PASSWORD}
@@ -22,6 +24,7 @@ Test Successful Signup
 
 
 Test Successful Login
+	[Tags]	Login	Account
 	Go To Login Page
 	Input Username	${CORRECT USERNAME}
 	Input Password	${CORRECT PASSWORD}
@@ -30,6 +33,7 @@ Test Successful Login
 
 
 Test Change Account Address
+	[Tags]	Account
 	Go To Login Page
 	Login To Account	${CORRECT USERNAME}	${CORRECT PASSWORD}
 	Travel To Edit Address
@@ -41,6 +45,7 @@ Test Change Account Address
 
 #Should add change password also
 Test Change Account Details
+	[Tags]	Account
 	Go To Login Page
 	Login To Account	${CORRECT USERNAME}	${CORRECT PASSWORD}
 	User Should Be On Account Dashboard
@@ -53,41 +58,45 @@ Test Change Account Details
 
 
 Test General Search
+	[Tags]	Search	Listing
 	Search For Term		${SEARCH BAR}	${GENERAL SEARCH TERM}
 	Click First Product
 	Check That Product Is Related	${GENERAL SEARCH TERM}
 
 Test Specific Search
+	[Tags]	Search	Listing
 	Go To Listing Page     ${LISTING PAGE}
 	${SPECIFIC PRODUCT}= 	Get Name Of First Product
 	Search For Term		${SEARCH BAR}	${SPECIFIC PRODUCT}
 	Check That Product Is On Listing Page	${SPECIFIC PRODUCT}
 
 Test Sort By Name
+	[Tags]	sort	Listing
 	Go To Listing Page     ${LISTING PAGE}
 	Sort Listing Page 	Name
 	Check Page Is Sorted By Name	
 
 Test Sort By Price
-	[Tags]	sort
+	[Tags]	sort	Listing
 	Go To Listing Page     ${LISTING PAGE}
 	Sort Listing Page	Price
 	Check Page Is Sorted By Price 
 
 Test Filter By Brand
-	[Tags]			filter	brand
+	[Tags]	filter	brand	Listing
 	Go To Listing Page     ${LISTING PAGE}
 	Filter Page By Brand	${BRAND FILTER}
 	Check Page Is Filtered By Brand		${BRAND FILTER}
 
 Test Filter By Price
-	[Tags]			filter	price
+	[Tags]	filter	price	Listing
 	Go To Listing Page     ${LISTING PAGE}
 	Filter Page By Price	${MAXIMUM PRICE}	${MINIMUM PRICE}	
 	Check Page Is Filtered By Price		${MAXIMUM PRICE}	${MINIMUM PRICE}
 
 
 Test Add Simple Product To Cart
+	[Tags]	Add	Simple	ProductPage
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	${QUANTITY}
 	Check Add To Cart Confirmation
@@ -96,6 +105,7 @@ Test Add Simple Product To Cart
 	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
 	
 Test Add Configurable Product To Cart
+	[Tags]	Add	Configurable	ProductPage
 	Go To Product Page	${CONFIGURABLE PRODUCT}
 	Add Configurable Product To Cart	${QUANTITY}	${CONFIGURATION OPTION}
 	Check Add To Cart Confirmation
@@ -105,6 +115,7 @@ Test Add Configurable Product To Cart
 
 #write keywords
 Test Add From Quickview
+	[Tags]	Add	Listing
 	Go To Listing Page     ${LISTING PAGE}			
 	Open Quickview			1	
 	Switch To Quickview Frame
@@ -115,6 +126,7 @@ Test Add From Quickview
 	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
 
 Test Remove Simple Product From Cart
+	[Tags]	Remove	Cart
 	Go To Product Page	${SIMPLE PRODUCT}
 	${PRODUCT NAME} =	Get Product Name
 	Add Simple Product To Cart	${QUANTITY}
@@ -123,6 +135,7 @@ Test Remove Simple Product From Cart
 	Check Product Was Removed From Cart	${PRODUCT NAME}
 
 Test Update Simple Product Quantity
+	[Tags]	Update	Cart
 	Go To Product Page	${SIMPLE PRODUCT}
 	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart	${QUANTITY}
@@ -132,7 +145,7 @@ Test Update Simple Product Quantity
 
 # To Do
 Test Logged In Checkout 
-	[Tags]		LoggedIn
+	[Tags]		LoggedIn	Checkout
 	Log		Test
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	${QUANTITY}	
@@ -152,6 +165,7 @@ Test Logged In Checkout
 
 #To Do: add password for guest checkout
 Test Checkout As Guest
+	[Tags]	Checkout
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	${QUANTITY}
 	Check Add To Cart Confirmation
@@ -166,6 +180,7 @@ Test Checkout As Guest
 
 #Write keywords for
 Test Critical Path As Guest
+	[Tags]	Checkout
 	Travel To Listing Page
 # Should add conditionals to add first product from quickview and first product to cart in case the product at the position is not a simple product
 	Add Simple Product To Cart From Quickview	1	${QUANTITY}	
@@ -181,4 +196,4 @@ Test Critical Path As Guest
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	Place Order
-
+	Order Should Be Successful	${ORDER SUCCESS URL}	
