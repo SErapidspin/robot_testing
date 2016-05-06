@@ -1,6 +1,7 @@
 *** SETTINGS ***
 Documentation		A base set of tests to run on sites to test basic functionality 
 Resource		resource.txt
+Resource		variables.txt
 Test Setup		Run Keywords 	Open Browser 	${HOME PAGE}	${BROWSER}
 ...			AND	Maximize Browser Window
 ...			AND 	Set Selenium Speed	${DELAY}
