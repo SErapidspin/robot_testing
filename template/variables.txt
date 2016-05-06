@@ -1,0 +1,59 @@
+*** Variables ***
+${DELAY}                        0
+${VALID USERNAME}               apang@demacmedia.com
+${VALID PASSWORD}               testing123
+
+#Below variables are to be done
+${HOME PAGE}    http://www.snugglebugz.ca
+${CLOSE NEWSLETTER BUTTON}      xpath=//div[@id ='newsletter-dropdown']//div[@class='close']
+${NEWSLETTER OVERLAY}   xpath=//div[@id='newsletter-dropdown']
+${LOGIN URL}    https://www.snugglebugz.ca/customer/account/login
+${SIMPLE PRODUCT}       http://www.snugglebugz.ca/dock-a-tot-deluxe-silver-lining.html
+${CONFIGURABLE PRODUCT}         http://www.snugglebugz.ca/mesa-car-seat.html
+${WISHLIST PAGE}
+${CORRECT USERNAME}     apang+3@demacmedia.com
+${CORRECT PASSWORD}     testing123
+${ACCOUNT DASH}         https://www.snugglebugz.ca/customer/account/
+${EMAIL ADDRESS}        apang+robot@demacmedia.com
+${REGISTER BUTTON}      xpath=//*[@id="login-form"]/div/div[1]/div[2]/a
+${REGISTER URL}         https://www.snugglebugz.ca/customer/account/create/
+${ACCOUNT INFORMATION URL}      https://www.snugglebugz.ca/customer/account/edit
+${ADDRESS BOOK URL}     https://www.snugglebugz.ca/customer/address/
+${CART URL}             http://www.snugglebugz.ca/checkout/cart/
+${LISTING PAGE}         http://www.snugglebugz.ca/just-arrived.html
+${SEARCH BAR}           id=search
+${GENERAL SEARCH TERM}          stroller
+${NEW QUANTITY}         3
+${FIRST NAME}           Andrew
+${NEW FIRST NAME}       Chris
+${LAST NAME}            Pang
+${NEW LAST NAME}        Redfield
+${TELEPHONE}            1234567890
+${NEW TELEPHONE}        9056571111
+${STREET}               211 Yonge Street
+${NEW STREET}           123 Sesame
+${CITY}                 Toronto
+${NEW CITY}             Montreal
+${REGION}               Ontario
+${NEW REGION}           Quebec
+${ZIP}                  M5B1M4
+${NEW ZIP}              1a2a3a
+${CHECKOUT URL}         https://www.snugglebugz.ca/checkout/onepage/
+${CHECKOUT BUTTON}      class=btn-checkout
+${PAYMENT GATEWAY}              monerisvault
+${BRAND FILTER}         AppleCheeks
+${MAXIMUM PRICE}        999.99
+${MINIMUM PRICE}        0.00
+${CONFIGURATION}        xpath=//select[contains(@id, 'attribute')]
+${CONFIGURATION OPTION}         xpath=//option[contains(text(), 'Black')]
+${QUANTITY}             1
+${CREDIT CARD NUMBER}   5113400993928386
+${CREDIT CARD MONTH}    9
+${CREDIT CARD YEAR}     2018
+${CREDIT CARD TYPE}     MC
+${CREDIT CARD VERIFICATION}     541
+${ORDER SUCCESS URL}    snugglebugz.ca/checkout/onepage/success
+
+
+#Perhaps the below should be specified in the command line?
+${BROWSER}              chrome
