@@ -1,6 +1,6 @@
 *** Settings ***
 
-Documentation	A practice resource file for an add to cart test
+Documentation	A resource file holding the keywords to be used for a site's keywords. Keywords might need changing to correspond with the functionality of each different site
 Library		Selenium2Library
 
 
@@ -54,7 +54,7 @@ Configure Quantity
 
 
 Press Add Button	
-	Click Button  xpath=//button[contains(@title, 'Add to Cart')]
+	Click Button  xpath=//button[@onclick='productAddToCartForm.submit(this)']
 
 Press Wishlist Button
 	Click Button	class=link-wishlist
@@ -402,6 +402,13 @@ Open Quickview
 	Mouse Over	xpath=(//*[@class='product-image'])[${PRODUCT NUMBER}]
 	Click Element	xpath=(//*[@class='quickview'])[${PRODUCT NUMBER}]
 
+#Closes a quickview. Assumes quickview is open
+Close Quickview
+	[Arguments]	${QUICKVIEW CLOSE BUTTON}
+	Click Element	${QUICKVIEW CLOSE BUTTON}
+	Wait Until Element Is Not Visible	xpath=//iframe[contains(@src, 'quickview')]	10
+	Switch To Default Frame
+
 #Switches to Quickview frame lol
 Switch To Quickview Frame
 	Select Frame	xpath=//iframe[contains(@src, 'quickview')]
@@ -429,7 +436,11 @@ Add Simple Product To Cart From Quickview
 
 #To Do
 Add Configurable Product To Cart From Quickview
-	[Arguments]	
+	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
+	Configure Option	${CONFIGURATION OPTION}
+	Configure Quantity	${QUANTITY}
+	Press Add Button
+	Close Quickview
 	
 
 #To Do

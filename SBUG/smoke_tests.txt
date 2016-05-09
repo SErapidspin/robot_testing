@@ -71,12 +71,6 @@ Test Specific Search
 	Search For Term		${SEARCH BAR}	${SPECIFIC PRODUCT}
 	Check That Product Is On Listing Page	${SPECIFIC PRODUCT}
 
-Test Sort By Name
-	[Tags]	sort	Listing
-	Go To Listing Page     ${LISTING PAGE}
-	Sort Listing Page 	Name
-	Check Page Is Sorted By Name	
-
 Test Sort By Price
 	[Tags]	sort	Listing
 	Go To Listing Page     ${LISTING PAGE}
