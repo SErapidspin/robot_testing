@@ -1,7 +1,15 @@
+*** Settings ***
+Documentation	A resource file holding the user variables (xpaths of elements, URLs, user credentials) of a certain site, to be used in a test suite. Variables will need to be changed for each site, as each xpath or variable will be incredibly likely to differ across different sites.
+
+
 *** Variables ***
 ${DELAY}                        0
 ${VALID USERNAME}               apang@demacmedia.com
 ${VALID PASSWORD}               testing123
+
+
+#Perhaps the below should be specified in the command line?
+${BROWSER}              chrome
 
 #Below variables are to be done
 ${HOME PAGE}    http://www.snugglebugz.ca
@@ -21,6 +29,7 @@ ${ACCOUNT INFORMATION URL}      https://www.snugglebugz.ca/customer/account/edit
 ${ADDRESS BOOK URL}     https://www.snugglebugz.ca/customer/address/
 ${CART URL}             http://www.snugglebugz.ca/checkout/cart/
 ${LISTING PAGE}         http://www.snugglebugz.ca/just-arrived.html
+${QUICKVIEW CLOSE BUTTON}	xpath=//*[@class = 'close-icon-img']
 ${SEARCH BAR}           id=search
 ${GENERAL SEARCH TERM}          stroller
 ${NEW QUANTITY}         3
@@ -55,5 +64,3 @@ ${CREDIT CARD VERIFICATION}     541
 ${ORDER SUCCESS URL}    snugglebugz.ca/checkout/onepage/success
 
 
-#Perhaps the below should be specified in the command line?
-${BROWSER}              chrome

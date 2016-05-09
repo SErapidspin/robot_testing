@@ -7,6 +7,10 @@ ${DELAY}                        0
 ${VALID USERNAME}               apang@demacmedia.com
 ${VALID PASSWORD}               testing123
 
+
+#Perhaps the below should be specified in the command line?
+${BROWSER}              chrome
+
 #Below variables are to be done
 ${HOME PAGE}    http://www.snugglebugz.ca
 ${CLOSE NEWSLETTER BUTTON}      xpath=//div[@id ='newsletter-dropdown']//div[@class='close']
@@ -60,5 +64,3 @@ ${CREDIT CARD VERIFICATION}     541
 ${ORDER SUCCESS URL}    snugglebugz.ca/checkout/onepage/success
 
 
-#Perhaps the below should be specified in the command line?
-${BROWSER}              chrome
