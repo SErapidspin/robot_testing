@@ -40,8 +40,8 @@ Go To Wishlist Page
 
 
 Configure Option
-	[Arguments] 	${DROPDOWN}	${OPTION} 	
-	Click Element	${DROPDOWN}
+	[Arguments] 	${OPTION} 	
+	Click Element	xpath=//${OPTION}/..
 	Wait Until Element Is Visible	${OPTION}
 	Click Element	${OPTION}
 
@@ -59,8 +59,8 @@ Press Wishlist Button
 
 
 Go To Cart Page
-	[Arguments]	${CART URL}
 	Go To		${CART URL}
+	Location Should Be 	${CART URL}
 
 #To Do
 #Checks that the product is in the cart and that its quantity is correct. Done in this way so you can do one without the other
@@ -354,7 +354,7 @@ Remove Product From Cart
 
 #To Do 
 #Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
-Check Product Was Removed From Cart
+Check Product Is Not In Cart
 	[Arguments]	${PRODUCT NAME}
 	Element Should Not Contain	xpath=//div[@class='main']	${PRODUCT NAME}
 
@@ -389,9 +389,16 @@ Add Simple Product To Cart
 
 Add Configurable Product To Cart
 	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
-	Configure Option 	${CONFIGURATION}	${CONFIGURATION OPTION}
+	Configure Option 	${CONFIGURATION OPTION}
 	Configure Quantity	${QUANTITY}
 	Press Add Button
+
+#Checks that there's an error message on the page with the string provided as an input
+Error Message Should Show
+	[Arguments]	${ERROR STRING}
+	Element Should Be Visible	xpath=//*[@class="error-msg"]//span[text() = ${ERROR STRING}]
+
+
 
 #To Do
 #Opens the quickview of the first product on the cart. Assumes browser is on listing page

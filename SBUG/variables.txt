@@ -53,7 +53,6 @@ ${PAYMENT GATEWAY}              monerisvault
 ${BRAND FILTER}         AppleCheeks
 ${MAXIMUM PRICE}        999.99
 ${MINIMUM PRICE}        0.00
-${CONFIGURATION}        xpath=//select[contains(@id, 'attribute')]
 ${CONFIGURATION OPTION}         xpath=//option[contains(text(), 'Black')]
 ${QUANTITY}             1
 ${CREDIT CARD NUMBER}   5113400993928386

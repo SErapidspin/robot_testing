@@ -127,14 +127,14 @@ Test Remove Simple Product From Cart
 	Add Simple Product To Cart	${QUANTITY}
 	Travel To Cart Page
 	Remove Product From Cart	${PRODUCT NAME}
-	Check Product Was Removed From Cart	${PRODUCT NAME}
+	Check Product Is Not In Cart	${PRODUCT NAME}
 
 Test Update Simple Product Quantity
 	[Tags]	Update	Cart
 	Go To Product Page	${SIMPLE PRODUCT}
 	${PRODUCT NAME}=	Get Product Name
 	Add Simple Product To Cart	${QUANTITY}
-	Go To Cart Page		${CART URL}
+	Go To Cart Page
 	Change Product Quantity In Cart		${PRODUCT NAME}		${NEW QUANTITY}
 	Check Product Quantity In Cart	${PRODUCT NAME}		${NEW QUANTITY}
 
@@ -154,7 +154,7 @@ Test Logged In Checkout
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	Wait Until Element Is Visible	id=checkout-step-review	7
 #Go back to the cart page and remove the added product from the cart for future tests. Prevents complications with out of stock products down the line. 
-	[Teardown]	Run Keywords	Go To Cart Page		${CART URL}
+	[Teardown]	Run Keywords	Go To Cart Page	
 	...		AND		Remove Product From Cart	\
 	...		AND		Close Browser
 
