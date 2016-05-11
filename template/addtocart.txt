@@ -1,0 +1,68 @@
+*** SETTINGS ***
+Documentation           A test suite to test the add to cart functionality of a website
+Resource                resource.txt
+Resource                variables.txt
+Test Setup              Run Keywords    Open Browser    ${HOME PAGE}    ${BROWSER}
+...                     AND     Maximize Browser Window
+...                     AND     Set Selenium Speed      ${DELAY}
+...                     AND     Set Selenium Timeout    10
+...                     AND     Close Newsletter Popup  ${CLOSE NEWSLETTER BUTTON}      ${NEWSLETTER OVERLAY}
+Force Tags              Addtocart
+Test Teardown           Close Browser
+
+
+*** VARIABLES ***
+
+${OUT OF STOCK CONFIGURABLE URL}	
+${OUT OF STOCK SIMPLE URL}
+${LIMITED SIMPLE PRODUCT}
+${LIMITED SIMPLE QUANTITY}
+${LIMITED CONFIG PRODUCT}
+${LIMITED CONFIG OPTION}
+${LIMITED CONFIG QUANTITY}
+
+
+*** TEST CASES ***
+
+#Test how a product page should behave when product is out of stock. Might need some major tweaking as each site can vary on what is supposed to happen
+# To Do
+Test Simple Out Of Stock
+	[Tags]	Negative	Simple
+	Go To Product Page	${OUT OF STOCK SIMPLE}
+	Page Should Contain	xpath=//*[contains(text(), "Out of Stock")]
+	Page Should Contain	xpath=//a[text() = "Get an email alert when this product is back in stock."]
+
+Test Configurable Out Of Stock
+	[Tags]	Negative	Configurable
+	Go To Configurable Page		${OUT OF STOCK CONFIGURABLE}
+	${PRODUCT NAME}=	Get Product Name
+	Add Configurable Product To Cart	
+	Error Message Should Show	This product is currently out of stock.
+	Go To Cart Page
+	Check Product Is Not In Cart	${PRODUCT NAME}
+
+Test Adding More Than Simple Available
+	[Tags]	Negative	Simple
+	Go To Product Page	${LIMITED SIMPLE PRODUCT}
+	Add Simple Product To Cart	${LIMITED SIMPLE QUANTITY}
+	${PRODUCT NAME}=	Get Product Name
+	Error Message Should Show	The requested quantity for "${PRODUCT NAME}" is not available.
+	Go To Cart Page
+	Check Product Is Not In Cart	${PRODUCT NAME}
+
+Test Adding More Than Configurable Avialable
+	[Tags]	Negative	Configurable
+	Go To Product Page	${LIMITED CONFIG PRODUCT}
+	${PRODUCT NAME}=	Get Product Name
+	Add Configurable Product To Cart	${LIMITED CONFIG QUANTITY}	${LIMITED CONFIG OPTION}
+	Error Message Should Show	The requested quantity for "${PRODUCT NAME}" is not available.
+	Go To Cart Page
+	Check Product Is Not In Cart	${PRODUCT NAME}
+	
+
+Test Adding More Than Maximum
+	[Tags]	Negative	
+	Go To Product Page	${OUT OF STOCK SIMPLE}
+	Add Simple Product To Cart	10001
+	Error Message Should Show	'The maximum quantity allowed for purchase is 10000.'
+
