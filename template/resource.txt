@@ -5,8 +5,6 @@ Library		Selenium2Library
 
 
 
-*** Variables ***
-
 *** Keywords ***
 #scrolls down the screen based on the amount of pixels provided in the agrument.
 Scroll Down
