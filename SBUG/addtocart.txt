@@ -13,33 +13,52 @@ Test Teardown           Close Browser
 
 *** VARIABLES ***
 
-${OUT OF STOCK CONFIGURABLE URL}	
-${OUT OF STOCK SIMPLE URL}
-${LIMITED SIMPLE PRODUCT}
-${LIMITED SIMPLE QUANTITY}
-${LIMITED CONFIG PRODUCT}
-${LIMITED CONFIG OPTION}
-${LIMITED CONFIG QUANTITY}
+${OUT OF STOCK SIMPLE URL}	http://www.snugglebugz.ca/brownstone-diaper-bag.html
+${OUT OF STOCK CONFIGURABLE URL}	http://www.snugglebugz.ca/cameleon-sun-canopy.html
+${OUT OF STOCK CONFIGURABLE OPTION}	Brown
+${LIMITED SIMPLE PRODUCT}	http://www.snugglebugz.ca/if-i-were-a-reindeer-board-book.html
+${LIMITED SIMPLE QUANTITY}	9999
+${LIMITED CONFIG PRODUCT}	http://www.snugglebugz.ca/cameleon-sun-canopy.html
+${LIMITED CONFIG OPTION}	Sand
+${LIMITED CONFIG QUANTITY}	9999
 
 
 *** TEST CASES ***
+
+Add Simple Product To Cart Twice
+	[Tags]	Simple	
+	Go To Product Page	${SIMPLE PRODUCT}
+	Add Simple Product To Cart	1
+	Check Add To Cart Confirmation
+	Press Add Button
+	Check Add To Cart Confirmation
+	${PRODUCT NAME}=	Get Product Name
+	Travel To Cart Page
+	Check Product Was Added To Cart		2	${PRODUCT NAME}
+
+Test Add Configurable Product To Cart Twice
+	Go To Product Page 	${CONFIG PRODUCT}
+	Add Configurable Product To Cart 	1	${PRODUCT NAME}
+	Check Add To Cart Confirmation
+	Press Add Button
+	Check Add To Cart Confirmation
+	${PRODUCT NAME}=	Get Product Name
+	Travel To Cart Page
+	Check Product Was Added To Cart		2	${PRODUCT NAME}
 
 #Test how a product page should behave when product is out of stock. Might need some major tweaking as each site can vary on what is supposed to happen
 # To Do
 Test Simple Out Of Stock
 	[Tags]	Negative	Simple
-	Go To Product Page	${OUT OF STOCK SIMPLE}
+	Go To Product Page	${OUT OF STOCK SIMPLE URL}
 	Page Should Contain	xpath=//*[contains(text(), "Out of Stock")]
 	Page Should Contain	xpath=//a[text() = "Get an email alert when this product is back in stock."]
 
 Test Configurable Out Of Stock
 	[Tags]	Negative	Configurable
-	Go To Configurable Page		${OUT OF STOCK CONFIGURABLE}
-	${PRODUCT NAME}=	Get Product Name
-	Add Configurable Product To Cart	
-	Error Message Should Show	This product is currently out of stock.
-	Go To Cart Page
-	Check Product Is Not In Cart	${PRODUCT NAME}
+	Go To Product Page		${OUT OF STOCK CONFIGURABLE}
+	Configure Option	${OUT OF STOCK CONFIGURABLE OPTION}
+	Page Should Contain	xpath=//p[contains(@class, "out-of-stock")]/span[contains(text(), "Out of Stock")]
 
 Test Adding More Than Simple Available
 	[Tags]	Negative	Simple
@@ -65,4 +84,9 @@ Test Adding More Than Maximum
 	Go To Product Page	${OUT OF STOCK SIMPLE}
 	Add Simple Product To Cart	10001
 	Error Message Should Show	'The maximum quantity allowed for purchase is 10000.'
+
+
+
+*** KEYWORDS ***
+
 

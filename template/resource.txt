@@ -41,7 +41,7 @@ Go To Wishlist Page
 
 Configure Option
 	[Arguments] 	${OPTION} 	
-	Click Element	xpath=//${OPTION}/..
+	Click Element	xpath=${OPTION}/..
 	Wait Until Element Is Visible	${OPTION}
 	Click Element	${OPTION}
 
@@ -109,9 +109,9 @@ Travel To Checkout Page
 # Close that damned newsletter popup
 Close Newsletter Popup
         [Arguments]     ${CLOSE NEWSLETTER BUTTON}  ${NEWSLETTER OVERLAY}
-        Wait Until Element Is Visible  ${CLOSE NEWSLETTER BUTTON}  7
-        Click Element  ${CLOSE NEWSLETTER BUTTON}
-        Wait Until Element Is Not Visible  ${NEWSLETTER OVERLAY}   7
+        Wait Until Element Is Visible  xpath=${CLOSE NEWSLETTER BUTTON}  7
+        Click Element  xpath=${CLOSE NEWSLETTER BUTTON}
+        Wait Until Element Is Not Visible  xpath=${NEWSLETTER OVERLAY}   7
 	Unselect Frame
 
 Input Username          [Arguments]  ${username}
@@ -136,8 +136,8 @@ Open Browser To Login Page
 #To Do
 Click Register Button
 	[Arguments]	${REGISTER BUTTON}
-	Wait Until Page Contains Element	${REGISTER BUTTON}	10
-	Click Element	${REGISTER BUTTON}
+	Wait Until Page Contains Element	xpath=${REGISTER BUTTON}	10
+	Click Element	xpath=${REGISTER BUTTON}
 	Location Should Be 	${REGISTER URL}
 
 #To Do
@@ -410,7 +410,7 @@ Open Quickview
 #Closes a quickview. Assumes quickview is open
 Close Quickview
 	[Arguments]	${QUICKVIEW CLOSE BUTTON}
-	Click Element	${QUICKVIEW CLOSE BUTTON}
+	Click Element	xpath=${QUICKVIEW CLOSE BUTTON}
 	Wait Until Element Is Not Visible	xpath=//iframe[contains(@src, 'quickview')]	10
 	Switch To Default Frame
 
@@ -425,7 +425,7 @@ Switch To Default Frame
 #To Do
 #Gets the product name in the first open quickview. Assumes that you're on the quickview frame 
 Get Quickview Product Name
-	${PRODUCT NAME}=	Get Text	xpath =//div[@id='quickview-product-shop']//div[@class ='product-name']/h1
+	${PRODUCT NAME}=	Get Text	xpath=//div[@id='quickview-product-shop']//div[@class ='product-name']/h1
 	[Return] 	${PRODUCT NAME}
 
 #To Do
