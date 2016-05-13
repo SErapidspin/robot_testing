@@ -16,31 +16,62 @@ Test Teardown           Close Browser
 ${OUT OF STOCK SIMPLE URL}	http://www.snugglebugz.ca/brownstone-diaper-bag.html
 ${OUT OF STOCK CONFIGURABLE URL}	http://www.snugglebugz.ca/cameleon-sun-canopy.html
 ${OUT OF STOCK CONFIGURABLE OPTION}	Brown
-${LIMITED SIMPLE PRODUCT}	http://www.snugglebugz.ca/if-i-were-a-reindeer-board-book.html
+${LIMITED SIMPLE URL}	http://www.snugglebugz.ca/if-i-were-a-reindeer-board-book.html
 ${LIMITED SIMPLE QUANTITY}	9999
-${LIMITED CONFIG PRODUCT}	http://www.snugglebugz.ca/cameleon-sun-canopy.html
+${LIMITED CONFIG URL}	http://www.snugglebugz.ca/cameleon-sun-canopy.html
 ${LIMITED CONFIG OPTION}	Sand
 ${LIMITED CONFIG QUANTITY}	9999
 
 
 *** TEST CASES ***
 
+Test Add Simple Product To Cart
+        [Tags]  Add     Simple  ProductPage
+        Go To Product Page      ${SIMPLE PRODUCT}
+        Add Simple Product To Cart      ${QUANTITY}
+        Check Add To Cart Confirmation
+        ${PRODUCT NAME} =       Get Product Name
+        Travel To Cart Page
+        Check Product Was Added To Cart         ${QUANTITY}     ${PRODUCT NAME}
+
+Test Add Configurable Product To Cart
+        [Tags]  Add     Configurable    ProductPage
+        Go To Product Page      ${CONFIGURABLE PRODUCT}
+        Add Configurable Product To Cart        ${QUANTITY}     ${CONFIGURATION OPTION}
+        Check Add To Cart Confirmation
+        ${PRODUCT NAME} =       Get Product Name
+        Travel To Cart Page
+        Check Product Was Added To Cart         ${QUANTITY}     ${PRODUCT NAME}
+
+Test Add Simple Product From Quickview
+        [Tags]  Add     Listing
+        Go To Listing Page     ${LISTING PAGE}
+        Open Quickview                  1
+        Switch To Quickview Frame
+        ${PRODUCT NAME} =       Get Quickview Product Name
+        Add Simple Product To Cart     ${QUANTITY}
+        Unselect Frame
+        Travel To Cart Page
+        Check Product Was Added To Cart         ${QUANTITY}     ${PRODUCT NAME}
+
+
+
 Add Simple Product To Cart Twice
 	[Tags]	Simple	
 	Go To Product Page	${SIMPLE PRODUCT}
 	Add Simple Product To Cart	1
 	Check Add To Cart Confirmation
-	Press Add Button
+	Click Add Button
 	Check Add To Cart Confirmation
 	${PRODUCT NAME}=	Get Product Name
 	Travel To Cart Page
 	Check Product Was Added To Cart		2	${PRODUCT NAME}
 
 Test Add Configurable Product To Cart Twice
-	Go To Product Page 	${CONFIG PRODUCT}
-	Add Configurable Product To Cart 	1	${PRODUCT NAME}
+	Go To Product Page 	${CONFIGURABLE PRODUCT}
+	Add Configurable Product To Cart 	1	${CONFIGURATION OPTION}
 	Check Add To Cart Confirmation
-	Press Add Button
+	Click Add Button
 	Check Add To Cart Confirmation
 	${PRODUCT NAME}=	Get Product Name
 	Travel To Cart Page
@@ -49,20 +80,26 @@ Test Add Configurable Product To Cart Twice
 #Test how a product page should behave when product is out of stock. Might need some major tweaking as each site can vary on what is supposed to happen
 # To Do
 Test Simple Out Of Stock
-	[Tags]	Negative	Simple
+	[Tags]	Negative	Simple	 
 	Go To Product Page	${OUT OF STOCK SIMPLE URL}
-	Page Should Contain	xpath=//*[contains(text(), "Out of Stock")]
-	Page Should Contain	xpath=//a[text() = "Get an email alert when this product is back in stock."]
+	Page Should Contain Element	xpath=//*[contains(text(), "Out of Stock")]
+	Wait Until Element Is Visible	xpath=//a[text() = "Get an email alert when this product is back in stock."]	5
+	
 
 Test Configurable Out Of Stock
-	[Tags]	Negative	Configurable
-	Go To Product Page		${OUT OF STOCK CONFIGURABLE}
+	[Tags]	Negative	Configurable	 
+	Go To Product Page		${OUT OF STOCK CONFIGURABLE URL}
 	Configure Option	${OUT OF STOCK CONFIGURABLE OPTION}
-	Page Should Contain	xpath=//p[contains(@class, "out-of-stock")]/span[contains(text(), "Out of Stock")]
+	Page Should Contain Element	xpath=//p[contains(@class, "out-of-stock")]/span[contains(text(), "Out of Stock")]
+	Element Should Be Disabled	xpath=//button[@onclick='productAddToCartForm.submit(this)']
+	Click Add Button
+	${PRODUCT NAME}=	Get Product Name
+	Go To Cart Page
+	Check Product Is Not In Cart	${PRODUCT NAME}
 
 Test Adding More Than Simple Available
-	[Tags]	Negative	Simple
-	Go To Product Page	${LIMITED SIMPLE PRODUCT}
+	[Tags]	Negative	Simple	
+	Go To Product Page	${LIMITED SIMPLE URL}
 	Add Simple Product To Cart	${LIMITED SIMPLE QUANTITY}
 	${PRODUCT NAME}=	Get Product Name
 	Error Message Should Show	The requested quantity for "${PRODUCT NAME}" is not available.
@@ -71,7 +108,7 @@ Test Adding More Than Simple Available
 
 Test Adding More Than Configurable Avialable
 	[Tags]	Negative	Configurable
-	Go To Product Page	${LIMITED CONFIG PRODUCT}
+	Go To Product Page	${LIMITED CONFIG URL}
 	${PRODUCT NAME}=	Get Product Name
 	Add Configurable Product To Cart	${LIMITED CONFIG QUANTITY}	${LIMITED CONFIG OPTION}
 	Error Message Should Show	The requested quantity for "${PRODUCT NAME}" is not available.
@@ -81,9 +118,9 @@ Test Adding More Than Configurable Avialable
 
 Test Adding More Than Maximum
 	[Tags]	Negative	
-	Go To Product Page	${OUT OF STOCK SIMPLE}
+	Go To Product Page	${OUT OF STOCK SIMPLE URL}
 	Add Simple Product To Cart	10001
-	Error Message Should Show	'The maximum quantity allowed for purchase is 10000.'
+	Error Message Should Show	The maximum quantity allowed for purchase is 10000.
 
 
 

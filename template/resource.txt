@@ -41,9 +41,9 @@ Go To Wishlist Page
 
 Configure Option
 	[Arguments] 	${OPTION} 	
-	Click Element	xpath=${OPTION}/..
-	Wait Until Element Is Visible	${OPTION}
-	Click Element	${OPTION}
+	Click Element	xpath=//option[contains(text(), '${OPTION}')]/..
+	Wait Until Element Is Visible	xpath=//option[contains(text(), '${OPTION}')]
+	Click Element	xpath=//option[contains(text(), '${OPTION}')]
 
 
 Configure Quantity
@@ -51,7 +51,7 @@ Configure Quantity
 	Input Text	id=qty	${QUANTITY}
 
 
-Press Add Button	
+Click Add Button	
 	Click Button  xpath=//button[@onclick='productAddToCartForm.submit(this)']
 
 Press Wishlist Button
@@ -90,7 +90,7 @@ Check Product Quantity In Cart
 # Wait is 10 seconds
 Check Add To Cart Confirmation
 	Wait Until Element Is Visible		id=header-cart	10
-
+	Wait Until Element Is Visible		xpath=//div[@class='added-to-cart']	5
 #To Do
 # Travel to the cart page using the minicart link at the top (if there is one)
 Travel To Cart Page
@@ -385,18 +385,18 @@ Get Product Name
 Add Simple Product To Cart
 	[Arguments]	${QUANTITY}
 	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Click Add Button
 
 Add Configurable Product To Cart
 	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
 	Configure Option 	${CONFIGURATION OPTION}
 	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Click Add Button
 
 #Checks that there's an error message on the page with the string provided as an input
 Error Message Should Show
 	[Arguments]	${ERROR STRING}
-	Element Should Be Visible	xpath=//*[@class="error-msg"]//span[text() = ${ERROR STRING}]
+	Wait Until Element Is Visible	xpath=//*[@class="error-msg"]//span[text() = '${ERROR STRING}']	10
 
 
 
@@ -444,8 +444,17 @@ Add Configurable Product To Cart From Quickview
 	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
 	Configure Option	${CONFIGURATION OPTION}
 	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Click Add Button
 	Close Quickview
+
+# To Do
+Add Simple Product To Cart From Listing Page
+	[Arguments]	${PRODUCT NAME}
+
+
+$ To Do
+Add Configurable Product To Cart From Listing Page
+	[Arguments]	${PRODUCT NAME}
 	
 
 #To Do

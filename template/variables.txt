@@ -1,6 +1,5 @@
 *** Settings ***
-Documentation	A resource file holding the user variables (xpaths of elements, URLs, user credentials) of a certain site, to be used in a test suite. Variables will need to be changed for each site, as each xpath or variable will be incredibly likely to differ across different sites.
-Documentation	For xpaths, just put the raw xpath instead of having 'xpath=' preceding it. That will be done in the keyword
+Documentation	A resource file holding the user variables (xpaths of elements, URLs, user credentials) of a certain site, to be used in a test suite. Variables will need to be changed for each site, as each xpath or variable will be incredibly likely to differ across different sites. For xpaths, just put the raw xpath instead of having 'xpath=' preceding it. That will be done in the keyword
 
 *** Variables ***
 ${DELAY}                        0
@@ -53,7 +52,7 @@ ${PAYMENT GATEWAY}              monerisvault
 ${BRAND FILTER}         AppleCheeks
 ${MAXIMUM PRICE}        999.99
 ${MINIMUM PRICE}        0.00
-${CONFIGURATION OPTION}         //option[contains(text(), 'Black')]
+${CONFIGURATION OPTION}         Black
 ${QUANTITY}             1
 ${CREDIT CARD NUMBER}   5113400993928386
 ${CREDIT CARD MONTH}    9

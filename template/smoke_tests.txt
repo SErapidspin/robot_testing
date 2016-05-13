@@ -109,7 +109,7 @@ Test Add Configurable Product To Cart
 	Check Product Was Added To Cart		${QUANTITY}	${PRODUCT NAME}
 
 #write keywords
-Test Add From Quickview
+Test Add Simple Product From Quickview
 	[Tags]	Add	Listing
 	Go To Listing Page     ${LISTING PAGE}			
 	Open Quickview			1	
