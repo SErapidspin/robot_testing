@@ -111,7 +111,7 @@ Test Add Configurable Product To Cart
 #write keywords
 Test Add Simple Product From Quickview
 	[Tags]	Add	Listing
-	Go To Listing Page     ${LISTING PAGE}			
+	Go To Listing Page      http://www.snugglebugz.ca/catalogsearch/result/?q=board+book
 	Open Quickview			1	
 	Switch To Quickview Frame
 	${PRODUCT NAME} =	Get Quickview Product Name
@@ -178,8 +178,8 @@ Test Critical Path As Guest
 	[Tags]	Checkout
 	Travel To Listing Page
 # Should add conditionals to add first product from quickview and first product to cart in case the product at the position is not a simple product
-	Add Simple Product To Cart From Quickview	1	${QUANTITY}	
-	Travel To Product Page				1
+	Add Simple Product To Cart From Quickview	3	${QUANTITY}	
+	Travel To Product Page				3
 	Add Simple Product To Cart				${QUANTITY}
 	Check Add To Cart Confirmation			
 	Travel To Cart Page
@@ -191,4 +191,4 @@ Test Critical Path As Guest
 	Enter Shipping Method
 	Enter Payment Information	${CREDIT CARD NUMBER}   ${CREDIT CARD TYPE}     ${CREDIT CARD MONTH}    ${CREDIT CARD YEAR}     ${CREDIT CARD VERIFICATION}
 	Place Order
-	Order Should Be Successful	${ORDER SUCCESS URL}	
+	Should Be On Order Confirmation Page	${ORDER SUCCESS URL}	

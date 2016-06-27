@@ -43,9 +43,10 @@ Test Add Configurable Product To Cart
         Travel To Cart Page
         Check Product Was Added To Cart         ${QUANTITY}     ${PRODUCT NAME}
 
+# Gotta find a listing page where it's guaranteed to find a simple product...perhaps search page?
 Test Add Simple Product From Quickview
         [Tags]  Add     Listing
-        Go To Listing Page     ${LISTING PAGE}
+        Go To Listing Page     http://www.snugglebugz.ca/catalogsearch/result/?q=bath+toy+bin
         Open Quickview                  1
         Switch To Quickview Frame
         ${PRODUCT NAME} =       Get Quickview Product Name
