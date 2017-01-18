@@ -49,8 +49,8 @@ ${NEW ZIP}              A2A 2A3
 ${CHECKOUT URL}         https://www.snugglebugz.ca/checkout/onepage/
 ${CHECKOUT BUTTON}      class=btn-checkout
 ${PAYMENT GATEWAY}              monerisvault
-${BRAND FILTER}         AppleCheeks
-${MAXIMUM PRICE}        99.99
+${BRAND FILTER}         Bumkins
+${MAXIMUM PRICE}        999.99
 ${MINIMUM PRICE}        0.00
 ${CONFIGURATION OPTION}         Black
 ${QUANTITY}             1
