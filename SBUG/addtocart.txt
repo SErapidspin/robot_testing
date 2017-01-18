@@ -13,7 +13,7 @@ Test Teardown           Close Browser
 
 *** VARIABLES ***
 
-${OUT OF STOCK SIMPLE URL}	http://www.snugglebugz.ca/brownstone-diaper-bag.html
+${OUT OF STOCK SIMPLE URL}	http://www.snugglebugz.ca/if-i-were-a-reindeer-board-book.html
 ${OUT OF STOCK CONFIGURABLE URL}	http://www.snugglebugz.ca/cameleon-sun-canopy.html
 ${OUT OF STOCK CONFIGURABLE OPTION}	Brown
 ${LIMITED SIMPLE URL}	http://www.snugglebugz.ca/if-i-were-a-reindeer-board-book.html
@@ -83,7 +83,6 @@ Test Simple Out Of Stock
 	[Tags]	Negative	Simple	 
 	Go To Product Page	${OUT OF STOCK SIMPLE URL}
 	Page Should Contain Element	xpath=//*[contains(text(), "Out of Stock")]
-	Wait Until Element Is Visible	xpath=//a[text() = "Get an email alert when this product is back in stock."]	5
 	
 
 Test Configurable Out Of Stock
