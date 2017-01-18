@@ -1,6 +1,5 @@
 *** Settings ***
-Documentation	A resource file holding the user variables (xpaths of elements, URLs, user credentials) of a certain site, to be used in a test suite. Variables will need to be changed for each site, as each xpath or variable will be incredibly likely to differ across different sites.
-
+Documentation	A resource file holding the user variables (xpaths of elements, URLs, user credentials) of a certain site, to be used in a test suite. Variables will need to be changed for each site, as each xpath or variable will be incredibly likely to differ across different sites. For xpaths, just put the raw xpath instead of having 'xpath=' preceding it. That will be done in the keyword
 
 *** Variables ***
 ${DELAY}                        0
@@ -13,8 +12,8 @@ ${BROWSER}              chrome
 
 #Below variables are to be done
 ${HOME PAGE}    http://www.snugglebugz.ca
-${CLOSE NEWSLETTER BUTTON}      xpath=//div[@id ='newsletter-dropdown']//div[@class='close']
-${NEWSLETTER OVERLAY}   xpath=//div[@id='newsletter-dropdown']
+${CLOSE NEWSLETTER BUTTON}      //div[@id ='newsletter-dropdown']//div[@class='close']
+${NEWSLETTER OVERLAY}   //div[@id='newsletter-dropdown']
 ${LOGIN URL}    https://www.snugglebugz.ca/customer/account/login
 ${SIMPLE PRODUCT}       http://www.snugglebugz.ca/dock-a-tot-deluxe-silver-lining.html
 ${CONFIGURABLE PRODUCT}         http://www.snugglebugz.ca/mesa-car-seat.html
@@ -23,13 +22,13 @@ ${CORRECT USERNAME}     apang+3@demacmedia.com
 ${CORRECT PASSWORD}     testing123
 ${ACCOUNT DASH}         https://www.snugglebugz.ca/customer/account/
 ${EMAIL ADDRESS}        apang+robot@demacmedia.com
-${REGISTER BUTTON}      xpath=//*[@id="login-form"]/div/div[1]/div[2]/a
+${REGISTER BUTTON}      //*[@id="login-form"]/div/div[1]/div[2]/a
 ${REGISTER URL}         https://www.snugglebugz.ca/customer/account/create/
 ${ACCOUNT INFORMATION URL}      https://www.snugglebugz.ca/customer/account/edit
 ${ADDRESS BOOK URL}     https://www.snugglebugz.ca/customer/address/
 ${CART URL}             http://www.snugglebugz.ca/checkout/cart/
 ${LISTING PAGE}         http://www.snugglebugz.ca/just-arrived.html
-${QUICKVIEW CLOSE BUTTON}	xpath=//*[@class = 'close-icon-img']
+${QUICKVIEW CLOSE BUTTON}	//*[@class = 'close-icon-img']
 ${SEARCH BAR}           id=search
 ${GENERAL SEARCH TERM}          stroller
 ${NEW QUANTITY}         3
@@ -46,15 +45,14 @@ ${NEW CITY}             Montreal
 ${REGION}               Ontario
 ${NEW REGION}           Quebec
 ${ZIP}                  M5B1M4
-${NEW ZIP}              1a2a3a
+${NEW ZIP}              1A2A3A
 ${CHECKOUT URL}         https://www.snugglebugz.ca/checkout/onepage/
 ${CHECKOUT BUTTON}      class=btn-checkout
 ${PAYMENT GATEWAY}              monerisvault
 ${BRAND FILTER}         AppleCheeks
-${MAXIMUM PRICE}        999.99
+${MAXIMUM PRICE}        99.99
 ${MINIMUM PRICE}        0.00
-${CONFIGURATION}        xpath=//select[contains(@id, 'attribute')]
-${CONFIGURATION OPTION}         xpath=//option[contains(text(), 'Black')]
+${CONFIGURATION OPTION}         Black
 ${QUANTITY}             1
 ${CREDIT CARD NUMBER}   5113400993928386
 ${CREDIT CARD MONTH}    9

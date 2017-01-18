@@ -40,10 +40,10 @@ Go To Wishlist Page
 
 
 Configure Option
-	[Arguments] 	${DROPDOWN}	${OPTION} 	
-	Click Element	${DROPDOWN}
-	Wait Until Element Is Visible	${OPTION}
-	Click Element	${OPTION}
+	[Arguments] 	${OPTION} 	
+	Click Element	xpath=//option[contains(text(), '${OPTION}')]/..
+	Wait Until Element Is Visible	xpath=//option[contains(text(), '${OPTION}')]
+	Click Element	xpath=//option[contains(text(), '${OPTION}')]
 
 
 Configure Quantity
@@ -51,7 +51,7 @@ Configure Quantity
 	Input Text	id=qty	${QUANTITY}
 
 
-Press Add Button	
+Click Add Button	
 	Click Button  xpath=//button[@onclick='productAddToCartForm.submit(this)']
 
 Press Wishlist Button
@@ -59,8 +59,8 @@ Press Wishlist Button
 
 
 Go To Cart Page
-	[Arguments]	${CART URL}
 	Go To		${CART URL}
+	Location Should Be 	${CART URL}
 
 #To Do
 #Checks that the product is in the cart and that its quantity is correct. Done in this way so you can do one without the other
@@ -90,7 +90,7 @@ Check Product Quantity In Cart
 # Wait is 10 seconds
 Check Add To Cart Confirmation
 	Wait Until Element Is Visible		id=header-cart	10
-
+	Wait Until Element Is Visible		xpath=//div[@class='added-to-cart']	5
 #To Do
 # Travel to the cart page using the minicart link at the top (if there is one)
 Travel To Cart Page
@@ -109,9 +109,9 @@ Travel To Checkout Page
 # Close that damned newsletter popup
 Close Newsletter Popup
         [Arguments]     ${CLOSE NEWSLETTER BUTTON}  ${NEWSLETTER OVERLAY}
-        Wait Until Element Is Visible  ${CLOSE NEWSLETTER BUTTON}  7
-        Click Element  ${CLOSE NEWSLETTER BUTTON}
-        Wait Until Element Is Not Visible  ${NEWSLETTER OVERLAY}   7
+        Wait Until Element Is Visible  xpath=${CLOSE NEWSLETTER BUTTON}  7
+        Click Element  xpath=${CLOSE NEWSLETTER BUTTON}
+        Wait Until Element Is Not Visible  xpath=${NEWSLETTER OVERLAY}   7
 	Unselect Frame
 
 Input Username          [Arguments]  ${username}
@@ -136,8 +136,8 @@ Open Browser To Login Page
 #To Do
 Click Register Button
 	[Arguments]	${REGISTER BUTTON}
-	Wait Until Page Contains Element	${REGISTER BUTTON}	10
-	Click Element	${REGISTER BUTTON}
+	Wait Until Page Contains Element	xpath=${REGISTER BUTTON}	10
+	Click Element	xpath=${REGISTER BUTTON}
 	Location Should Be 	${REGISTER URL}
 
 #To Do
@@ -256,14 +256,14 @@ Check That Product Is On Listing Page
 	
 
 Go To Listing Page
-	[Arguments]	${LISTING PAGE}
-	Go To	${LISTING PAGE}	
-	Location Should Be	${LISTING PAGE}
+	[Arguments]	${GO TO LISTING PAGE}
+	Go To	${GO TO LISTING PAGE}	
+	Location Should Be	${GO TO LISTING PAGE}
 
 
 #Difference between Travel and Go to: Travel tries to go to a location naturally (mouse clicks and hovers), Go To simply goes to URL
 #To do:	arguments to click different links in the header nav
-#Hard Coded to click the 'Just Arrived' link in the b
+#Hard Coded to click the 'Just Arrived' link in the nav
 Travel To Listing Page
 	Click Element	xpath=//nav[@id='nav']//a[text() = "Just Arrived"]
 	
@@ -339,8 +339,8 @@ Check Page Is Filtered By Price
 	\	Log		'Price found: ${PRICE}'
 	\	${TEXT}=	Get Text	${PRICE}
 	\	${FLOAT}=	Convert To Number	${TEXT.strip('$')}
-	\	Should Be True	${FLOAT} > ${MINIMUM PRICE}	'Price ${FLOAT} is lower than minimum price ${MINIMUM PRICE}!'
-	\ 	Should Be True	${FLOAT} < ${MAXIMUM PRICE}	'Price ${FLOAT} is higher than maximum price ${MAXIMUM PRICE}!'
+	\	Should Be True	${FLOAT} >= ${MINIMUM PRICE}	'Price ${FLOAT} is lower than minimum price ${MINIMUM PRICE}!'
+	\ 	Should Be True	${FLOAT} <= ${MAXIMUM PRICE}	'Price ${FLOAT} is higher than maximum price ${MAXIMUM PRICE}!'
 
 #To Do
 #Basically clicks the remove item button associated with a product name. Assumes the browser is on the cart page
@@ -352,9 +352,39 @@ Remove Product From Cart
 	Click Element	xpath=//table[@id='shopping-cart-table']//*[@class='product-name']//*[contains(text(), '${PRODUCT NAME}')]/../../..//*[@title = 'Remove Item']
 	
 
+#Basically just opens the minicart
+Open Minicart
+	Click Element	xpath=//*[@id= "header-minicart-01"]
+	Wait Until Element Is Visible	xpath=//*[id='header-cart']	5
+
+
+# Clicks the 'Remove Item' link associated with the product name in the minicart. Assumes that the product name exists in the minicart and that there's a remove button. Also uses a really ugly xpath to do it. Also assumes the minicart is open
+Remove Product From Minicart
+	[Arguments]	${PRODUCT NAME}
+# go make that super ugly xpath for the edit product link
+	Click Element	xpath=//
+
+# Clicks the 'Edit Item' link associated with the product name in the minicart, then edits the product to the intended quantity. Assumes the minicart is open and that the product is in the minicart preview
+Edit Simple Product In Minicart
+	[Arguments]	${PRODUCT NAME}		${QUANTITY}
+	# go make that super ugly xpath for the edit product link
+	Click Element	xpath=//
+	Configure Quantity	${QUANTITY}
+	Click Element	xpath=//button[@title = "Update Cart"]//span[text() = "Update Cart"]
+
+# Clicks the 'Edit Item' link associated with the product name in the minicart, and then edits the product to the intended quantity and intended configuration. Assumes the minicart is open and that the product is in the minicart preview 
+Edit Configurable Product In Minicart
+	[Arguments]	${PRODUCT NAME}		${CONFIGURATION OPTION} 	${QUANTITY}
+	# go make that super ugly xpath for the edit product link
+	Click Element
+	Configure Quantity	${QUANTITY}
+	Configure Option	${CONFIGURATION OPTION}
+	Click Element	xpath=//button[@title= "Update Cart"]//span[text() = "Update Cart"]
+
+
 #To Do 
 #Basically just checks the page to see if there's no instance of that product name. Assumes that the browser is on the cart page
-Check Product Was Removed From Cart
+Check Product Is Not In Cart
 	[Arguments]	${PRODUCT NAME}
 	Element Should Not Contain	xpath=//div[@class='main']	${PRODUCT NAME}
 
@@ -385,13 +415,20 @@ Get Product Name
 Add Simple Product To Cart
 	[Arguments]	${QUANTITY}
 	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Click Add Button
 
 Add Configurable Product To Cart
 	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
-	Configure Option 	${CONFIGURATION}	${CONFIGURATION OPTION}
+	Configure Option 	${CONFIGURATION OPTION}
 	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Click Add Button
+
+#Checks that there's an error message on the page (in an element with the class error-msg) with the string provided as an input
+Error Message Should Show
+	[Arguments]	${ERROR STRING}
+	Wait Until Element Is Visible	xpath=//*[@class="error-msg"]//span[text() = '${ERROR STRING}']	10
+
+
 
 #To Do
 #Opens the quickview of the first product on the cart. Assumes browser is on listing page
@@ -403,7 +440,7 @@ Open Quickview
 #Closes a quickview. Assumes quickview is open
 Close Quickview
 	[Arguments]	${QUICKVIEW CLOSE BUTTON}
-	Click Element	${QUICKVIEW CLOSE BUTTON}
+	Click Element	xpath=${QUICKVIEW CLOSE BUTTON}
 	Wait Until Element Is Not Visible	xpath=//iframe[contains(@src, 'quickview')]	10
 	Switch To Default Frame
 
@@ -418,7 +455,7 @@ Switch To Default Frame
 #To Do
 #Gets the product name in the first open quickview. Assumes that you're on the quickview frame 
 Get Quickview Product Name
-	${PRODUCT NAME}=	Get Text	xpath =//div[@id='quickview-product-shop']//div[@class ='product-name']/h1
+	${PRODUCT NAME}=	Get Text	xpath=//div[@id='quickview-product-shop']//div[@class ='product-name']/h1
 	[Return] 	${PRODUCT NAME}
 
 #To Do
@@ -437,8 +474,17 @@ Add Configurable Product To Cart From Quickview
 	[Arguments]	${QUANTITY}	${CONFIGURATION OPTION}
 	Configure Option	${CONFIGURATION OPTION}
 	Configure Quantity	${QUANTITY}
-	Press Add Button
+	Click Add Button
 	Close Quickview
+
+# To Do
+Add Simple Product To Cart From Listing Page
+	[Arguments]	${PRODUCT NAME}
+
+
+$ To Do
+Add Configurable Product To Cart From Listing Page
+	[Arguments]	${PRODUCT NAME}
 	
 
 #To Do
@@ -531,7 +577,7 @@ Place Order
 	Click Button	xpath=//button[contains(@class, 'btn-checkout')]
 
 #Basically just checks for the various things that should indiate that the checkout was successful
-Order Should Be Successful
+Should Be On Order Confirmation Page
 	[Arguments]	${ORDER SUCCESS URL}
 	Location Should Contain	${ORDER SUCCESS URL}
 	Page Should Contain Element	xpath=//a[contains(@href,'order_id')]
