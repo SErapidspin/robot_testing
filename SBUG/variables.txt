@@ -45,7 +45,7 @@ ${NEW CITY}             Montreal
 ${REGION}               Ontario
 ${NEW REGION}           Quebec
 ${ZIP}                  M5B1M4
-${NEW ZIP}              1a2a3a
+${NEW ZIP}              1A2A3A
 ${CHECKOUT URL}         https://www.snugglebugz.ca/checkout/onepage/
 ${CHECKOUT BUTTON}      class=btn-checkout
 ${PAYMENT GATEWAY}              monerisvault
