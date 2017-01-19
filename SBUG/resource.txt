@@ -12,12 +12,23 @@ Scroll Down
 	Execute Javascript	window.scrollBy(0,${SCROLL PIXELS})
 
 
+Open Browser To Home Page
+	[Arguments] 	${HOME PAGE}		${BROWSER}
+	Open Browser	${HOME PAGE}		${BROWSER}
+	
+
 Open Browser To Product Page 
 	[Arguments]	${PRODUCT PAGE}		${BROWSER}
 	Open Browser	${PRODUCT PAGE} 	${BROWSER}		
 	Set Selenium Speed	${DELAY}
 	Maximize Browser Window
 	Location Should Be	${PRODUCT PAGE}
+
+Open Browser To Login Page
+        Open Browser  ${LOGIN URL}   ${BROWSER}
+        Maximize Browser Window
+        Set Selenium Speed  ${DELAY}
+        Location Should Be  ${LOGIN URL}
 
 
 #Clicks to the nth (denoted by the argument) product page on the listing page. Assumes the browser is on a listing page
@@ -126,12 +137,6 @@ Login To Account
 	Input Password  	${PASSWORD}
 	Wait Until Element Is Visible	xpath=//*[@id="send2"]
 	Click Button	xpath=//*[@id="send2"]
-
-Open Browser To Login Page
-        Open Browser  ${LOGIN URL}   ${BROWSER}
-        Maximize Browser Window
-        Set Selenium Speed  ${DELAY}
-        Location Should Be  ${LOGIN URL}
 
 #To Do
 Click Register Button
