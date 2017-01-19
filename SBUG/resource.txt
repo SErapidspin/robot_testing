@@ -319,7 +319,7 @@ Filter Page By Brand
 Filter Page By Price
 	[Arguments]	${MAXIMUM PRICE}	${MINIMUM PRICE}
 #Looks ugly, but the xpath below basically finds a link in the filter bar that contains the maximum and minimum price
-	Click Element	xpath=//*[@id='narrow-by-list']//a[.//span[@class ="price" and contains(text(),"${MINIMUM PRICE}")] and .//span[@class ="price" and contains(text(),"${MAXIMUM PRICE}")]]
+	Click Element	xpath=//*[@id='narrow-by-list']//a[.//span[@class ="price" and contains(text(),"\$${MINIMUM PRICE}")] and .//span[@class ="price" and contains(text(),"\$${MAXIMUM PRICE}")]]
 
 #To Do
 #Gets each of the brands in each product block and then asserts that they all contain the parameter that is inserted as an argument. Assumes the user is on the listing page
