@@ -1,0 +1,17 @@
+*** SETTINGS ***
+Documentation           A test suite to test the add to cart functionality of a website
+Resource                resource.txt
+Resource                variables.txt
+
+
+
+*** VARIABLES ***
+
+
+*** KEYWORDS ***
+
+
+*** TEST CASES ***
+
+
+
