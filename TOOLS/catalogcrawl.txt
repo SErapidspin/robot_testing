@@ -1,0 +1,31 @@
+*** Settings ***
+
+Documentation	This set of tests is intended to help with validating entire catalogs by crawling through a catalog, creating a list of the products, and applying a check to each of them
+Resource	resource.txt
+Test Setup              Run Keywords    Open Browser    ${HOME PAGE}    ${BROWSER}
+...                     AND     Maximize Browser Window
+...                     AND     Set Selenium Speed      ${DELAY}
+...                     AND     Set Selenium Timeout    10
+...                     AND     Close Newsletter Popup  ${CLOSE NEWSLETTER BUTTON}      ${NEWSLETTER OVERLAY}
+Test Teardown	Close Browser
+
+
+*** Variables ***
+${HOMEPAGE}=	http://www.snugglebugz.ca
+${CATEGORY PAGE URL}=	http://www.snugglebugz.ca/just-arrived.html
+${BROWSER}=	firefox
+${DELAY}                        0
+${CLOSE NEWSLETTER BUTTON}      //div[@id ='newsletter-dropdown']//div[@class='close']
+${NEWSLETTER OVERLAY}   //div[@id='newsletter-dropdown']
+
+
+*** Test Cases ***
+
+# Currently 'breaks' if one product doesn't pass test. Will need a bit of extra work to get it to continue on failure
+Test Catalog Prices
+	Go To	${CATEGORY PAGE URL}
+	@{PAGE URLS}=	Get Category Pages
+	:FOR	${URL}	IN	@{PAGE URLS}
+	\	Log	'Page URL: ${URL}'
+	\	Go To	${URL}
+	\ 	Validate Category Page
