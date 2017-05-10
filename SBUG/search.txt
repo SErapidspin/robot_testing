@@ -1,17 +1,36 @@
 *** SETTINGS ***
-Documentation           A test suite to test the add to cart functionality of a website
+Documentation           A test suite to test the search functionality of a website
+Test Setup              Run Keywords    Open Browser    ${HOME PAGE}    ${BROWSER}
+...                     AND     Maximize Browser Window
+...                     AND     Set Selenium Speed      ${DELAY}
+...                     AND     Set Selenium Timeout    10
+...                     AND     Close Newsletter Popup  ${CLOSE NEWSLETTER BUTTON}      ${NEWSLETTER OVERLAY}
 Resource                resource.txt
 Resource                variables.txt
-
+Force Tags		Search
+Test Teardown		Close Browser
 
 
 *** VARIABLES ***
+${GENERAL SEARCH TERM}	Big
 
 
 *** KEYWORDS ***
 
+Click Search Button
+	Click Element	id=header-search-trigger
+
+#Opens search bar (if necessary) and enters search term 
+Enter Search Term
+	[Arguments]	${SEARCH TERM}
+	Click Search Button
+	Wait Until Element Is Visible	id=search
+	Input Text	id=search	${SEARCH TERM}
 
 *** TEST CASES ***
 
-
-
+Test General Search
+	Enter Search Term	${GENERAL SEARCH TERM}
+	Click Element	xpath=//button[contains(@class,"search-button")] 
+	Travel To Product Page	1
+	Page Should Contain	${GENERAL SEARCH TERM}

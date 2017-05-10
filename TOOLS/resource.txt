@@ -1,0 +1,74 @@
+*** Settings ***
+
+Documentation	Keywords for crawling and validating a category page
+Library		Selenium2Library
+Library		String
+Library		Collections
+
+*** Variables ***
+
+${MAXIMUM PRICE}	9999.99
+${MINIMUM PRICE}	0
+${PRODUCT PRICE XPATH}=		xpath=//div[@id = "product_addtocart_form"]//span[contains(@id, "product-price")]
+${CATEGORY PRICE XPATH}=	xpath=//*[contains(@id,'product-price-')]
+
+#The Xpath matching the links in pagination. 
+#Must be careful when there's both pagination at the top and bottom of the page. 
+#Ideally also skips the current page link
+${PAGINATION XPATH}=		xpath=(//div[@class="toolbar-bottom"]//div[@class = "pagination"]//ol/li[not(contains(@class, "current"))]/a[not(contains(@class, "next"))])
+
+
+*** Keywords *** 
+# Close that damned newsletter popup
+Close Newsletter Popup
+        [Arguments]     ${CLOSE NEWSLETTER BUTTON}  ${NEWSLETTER OVERLAY}
+        Wait Until Element Is Visible  xpath=${CLOSE NEWSLETTER BUTTON}  7
+        Click Element  xpath=${CLOSE NEWSLETTER BUTTON}
+        Wait Until Element Is Not Visible  xpath=${NEWSLETTER OVERLAY}   7
+        Unselect Frame
+
+#Simply counts the pagination and returns a list of the links to each of them. Since there's no link for the current (first) page, will tend to skip over that one. Will need some tweaking for catalogs that have so many pages that some of them are not visible until you hit the later pages.
+# Also will not work with endless scroll :(
+Get Category Pages
+	${CURRENT LOCATION}=	Get Location
+	Log	${CURRENT LOCATION}
+	${PAGE URLS}=	Create List	${CURRENT LOCATION}
+	@{PAGINATION}=	Get Webelements	${PAGINATION XPATH}
+	${PAGENUM}=	Set Variable	1
+	:FOR	${PAGE}	IN	@{PAGINATION}
+	\	${URL}=	Get Element Attribute	${PAGINATION XPATH}[${PAGENUM}]@href
+	\	Log	${URL}
+	\	Append To List	${PAGE URLS}	${URL}
+	\	${PAGENUM}=	Evaluate	${PAGENUM}+1
+	[Return]	${PAGE URLS}
+
+Validate Category Page
+	Check Prices On Listing Page	${MAXIMUM PRICE}	${MINIMUM PRICE}
+	
+	
+
+#Goes through each of the prices on the page and validates that it's between the maximum and minimum
+Check Prices On Listing Page 
+        [Arguments]     ${MAX}        ${MIN}
+        @{PRICE LIST}=  Get Webelements       	${CATEGORY PRICE XPATH} 
+        :FOR    ${PRICE}        IN      @{PRICE LIST}
+        \       ${TEXT}=        Get Text        ${PRICE}
+	\	Log	'Price Found: ${TEXT}'
+	\	${TEXT}=	Replace String Using Regexp	${TEXT}	[^0-9.]	\		
+        \       ${FLOAT}=       Convert To Number     ${TEXT}
+	\	Validate Price Range	${FLOAT}	${MAX}	${MIN}
+
+# Runs the product through a series of checks. Assumes you're on the product page
+Validate Product Page
+	Validate Price Range	Get Product Page Price	${MAXIMUM PRICE}	${MINIMUM PRICE}
+
+# Assumes you're on the product page
+Get Product Page Price
+	${PRICE FOUND}=		Get Text	${PRODUCT PRICE XPATH}
+	${PRICE FOUND}= 	Convert To Number	${PRICE FOUND.sub('[^0-9.]', '')}
+	[Return]	${PRICE FOUND}
+
+Validate Price Range
+	[Arguments]	${PRICE}	${MAX}	${MIN}
+	Should Be True	${PRICE} > ${MIN}	'Price ${PRICE} is lower than minimum price ${MIN}!'
+	Should Be True	${PRICE} < ${MAX}	'Price ${PRICE} is higher than maximum price ${MAX}!' 
